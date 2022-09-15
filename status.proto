@@ -59,6 +59,9 @@ enum StatusCode {               // Reasons for an error
   DISABLED_API_KEY          = 1104;
   EXPIRED_API_KEY           = 1105;
   INVALID_API_KEY           = 1106;
+  // The customer managed key is inaccessible. This can be for various reasons, e.g.,
+  // the key does not exist, or the platform does not have permissions to use it.
+  CMK_INACCESSIBLE          = 1107;
 
   // Serving Query -------------------------------------------------------------
 
