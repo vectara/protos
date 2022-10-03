@@ -95,3 +95,19 @@ message ResetCorpusResponse {
   Status status = 1;
 }
 
+message ListCorporaRequest {
+  string filter = 2;         // A regex to match corpora against.
+  uint32 num_results = 4;    // Maximum results to return
+  bytes page_key = 5;
+}
+
+message ListCorporaResponse {
+  repeated Corpus corpus = 1;
+
+  // A key that is passed into a subsequent result in order to
+  // retrieve the next page of results.
+  bytes page_key = 2;
+  Status status = 1000;
+}
+
+
