@@ -1,8 +1,6 @@
 syntax = "proto3";
 
 import "status.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "vectara.com/public/proto/admin";
 
