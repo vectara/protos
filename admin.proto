@@ -78,8 +78,8 @@ message CreateCorpusResponse {
 }
 
 message DeleteCorpusRequest {
-  uint64 customer_id = 1;
-  uint64 corpus_id = 2;
+  uint32 customer_id = 1;
+  uint32 corpus_id = 2;
 }
 
 message DeleteCorpusResponse {
@@ -87,8 +87,8 @@ message DeleteCorpusResponse {
 }
 
 message ResetCorpusRequest {
-  uint64 customer_id = 1;
-  uint64 corpus_id = 2;
+  uint32 customer_id = 1;
+  uint32 corpus_id = 2;
 }
 
 message ResetCorpusResponse {
