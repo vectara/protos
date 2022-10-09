@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "admin.proto";
+
 import "common.proto";
 import "indexing.proto";
 import "serving.proto";
@@ -49,8 +50,7 @@ service IndexService {
 }
 
 service QueryService {
-  // A standard single-request, single-response endpoint designed for high
-  // performance.
+  // A standard single-request, single-response endpoint designed for high performance.
   rpc Query(com.vectara.serving.BatchQueryRequest)
           returns (com.vectara.serving.BatchQueryResponse) {
     option (google.api.http) = {
@@ -90,4 +90,13 @@ service AdminService {
       body: "*"
     };
   }
+  
+  rpc ListCorpora(com.vectara.admin.ListCorporaRequest)
+      returns (com.vectara.admin.ListCorporaResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-corpora"
+      body: "*"
+    };
+  }
+
 }
