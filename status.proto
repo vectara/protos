@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 option java_package = "com.vectara";
 option java_outer_classname = "StatusProtos";
 
@@ -10,6 +12,7 @@ package com.vectara;
 message Status {
   StatusCode code = 1;
   string status_detail = 2;
+
 }
 
 enum StatusCode {               // Reasons for an error
@@ -147,11 +150,6 @@ enum StatusCode {               // Reasons for an error
   // Schema Services -----------------------------------------------------------
 
   SCM__MISCONFIGURED_CONNECTION = 3000;
-
-  // Druid Errors
-  DRUID_READ_FAILURE = 3500;
-  DRUID_INVALID_DATA = 3501;
-  DRUID_NO_DATA = 3502;
 
   // StatDB Errors
   STATS_DB_READ_FAILURE = 3550;
