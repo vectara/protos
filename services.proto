@@ -17,8 +17,11 @@ package com.vectara;
 
 // Request to index a document.
 message IndexDocumentRequest {
+  // The Customer ID to issue the request for.
   int64 customer_id = 1;
+  // The Corpus ID to index the document into.
   int64 corpus_id = 2;
+  // The Document to index.
   com.vectara.indexing.Document document = 3;
 }
 

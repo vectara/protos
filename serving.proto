@@ -16,34 +16,45 @@ message CustomDimension {
 }
 
 message CorpusKey {
+  // The Customer ID.
   uint32 customer_id = 5;
+  // The Corpus ID.
   uint32 corpus_id = 10;
 
   // Semantics controls the interpretation of the query string by the
   // server, and can be used to override the default semantics assigned
   // in the corpus definition.
   enum Semantics {
-    DEFAULT = 0;                  // Use corpus-assigned semantics (most common).
-    QUERY = 1;                    // Use query semantics (common).
-    RESPONSE = 2;                 // Use response semantics (rare).
+    // Use corpus-assigned semantics.  This is the most common setting.
+    DEFAULT = 0;
+    // Use query semantics.  This is also common.
+    QUERY = 1;
+    // Use response semantics.  Usage of this is rare.
+    RESPONSE = 2;
   }
   Semantics semantics = 15;
 
-  repeated CustomDimension dim = 20;  // Weights on custom dimensions for the corpus.
+  // Weights on custom dimensions for the corpus.
+  repeated CustomDimension dim = 20;
 
   string metadata_filter = 25;
 }
 
 message QueryRequest {
+  // The query text to use from the end user.
   string query = 5;
-  string query_context = 10;
+  
 
-  uint32 start = 15;              // The start position in the result set.
-  uint32 num_results = 20;        // The number of results to return.
+  // The start position in the result set
+  uint32 start = 15;
+  // The number of results to return.
+  uint32 num_results = 20;
   repeated CorpusKey corpus_key = 25;
 
-  // Configuration options for reranking.
+  // Configuration options to apply to the reranking.
   message RerankingConfig {
+    // Which reranking model to use if reranking.  Currently, the only ID
+    // available is ID 272725717
     uint32 reranker_id = 5;
   }
   RerankingConfig reranking_config = 30;
@@ -56,15 +67,19 @@ message Attribute {
 
 message Response {
   string text = 5;
-  float score = 10;               // Score used for ranking results.
+  // The score used for ranking results.  The higher the score, the better the match.
+  float score = 10;
   repeated Attribute metadata = 20;
-  uint32 document_index = 25;     // Pointer to the document in the ResponseSet.
+  // Use this ID to find the document in the ResponseSet.
+  uint32 document_index = 25;
   CorpusKey corpus_key = 30;
+
 }
 
 message ResponseSet {
   repeated Response response = 5;
-  repeated Status status = 10;    // Potentially multiple warnings.
+  // Potentially multiple warnings.
+  repeated Status status = 10;
 
   message Document {
     string id = 5;
@@ -86,8 +101,12 @@ message BatchQueryResponse {
 
 // Basic performance metrics that can be attached to a server response.
 message PerformanceMetrics {
+  // How long it took to encode the query.
   uint32 query_encode_ms = 5;
+  // How long it took to retrieve relevant results.
   uint32 retrieval_ms = 10;
+  // How long it took to retrieve user data.
   uint32 userdata_retrieval_ms = 15;
+  // How long it took to rerank the results.
   uint32 rerank_ms = 20;
 }

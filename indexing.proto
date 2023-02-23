@@ -18,11 +18,12 @@ message Section {
   string title = 2;
   // The text of the section. This should never be empty.
   string text = 3;
-  // Metadata about this section. This should be a json string. It is passed through the system, without
-  // being used at indexing time. It can be retrieved at query time.
+  // Metadata about this section. This should be a json string. It is passed
+  // through the system, without being used at indexing time. It can be
+  // retrieved at query time.
   string metadata_json = 4;
-  // A list of custom dimension values that are included in the generated representation of all
-  // subsections (i.e. sections contains by this section).
+  // A list of custom dimension values that are included in the generated
+  // representation of all subsections (i.e. sections contains by this section).
   repeated CustomDimension custom_dims = 5;
 
   // A list of subsections.
@@ -40,8 +41,8 @@ message Document {
   // Metadata about the document. This should be a json string, and it can be
   // retrieved at query time.
   string metadata_json = 4;
-  // A list of custom dimension values that are included in the generated representation of all
-  // sections.
+  // A list of custom dimension values that are included in the generated
+  // representation of all sections.
   repeated CustomDimension custom_dims = 5;
 
   // The actual content of the document, structured as a repeating list
