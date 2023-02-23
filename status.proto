@@ -75,6 +75,7 @@ enum StatusCode {               // Reasons for an error
   QRY__INVALID_CORPUS       = 1520;
   QRY__INVALID_START        = 1525;
   QRY__INVALID_NUM_RESULTS  = 1530;
+  QRY__INVALID_CONTEXT      = 1531;
   QRY__MISSING_QUERY        = 1535;
   QRY__MISSING_CORPUS       = 1540;
   QRY__TIMEOUT              = 1545;

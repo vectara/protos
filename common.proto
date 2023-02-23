@@ -9,8 +9,11 @@ package com.vectara;
 
 // Request to delete a document from an index.
 message DeleteDocumentRequest {
+  // The Customer ID to issue the request for.
   int64 customer_id = 1;
+  // The Corpus ID that contains the document.
   int64 corpus_id = 2;
+  // The Document ID to be deleted.
   string document_id = 3;
 }
 
@@ -22,6 +25,7 @@ message DeleteDocumentResponse {
 message StorageQuota {
   // The number of chars from the document that consumed the storage quota.
   int64 num_chars = 1;
-  // The number of chars in the metadata of the document that consumed the storage quota.
+  // The number of chars in the metadata of the document that consumed the
+  // storage quota.
   int64 num_metadata_chars = 2;
 }
