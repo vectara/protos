@@ -15,6 +15,7 @@ message CustomDimension {
   double weight = 2;
 }
 
+
 message CorpusKey {
   // The Customer ID.
   uint32 customer_id = 5;
@@ -38,6 +39,7 @@ message CorpusKey {
   repeated CustomDimension dim = 20;
 
   string metadata_filter = 25;
+
 }
 
 message QueryRequest {
@@ -49,6 +51,9 @@ message QueryRequest {
   uint32 start = 15;
   // The number of results to return.
   uint32 num_results = 20;
+
+  // The query is run on all these corpora, and the results are
+  // merged together in the response, ranked by score.
   repeated CorpusKey corpus_key = 25;
 
   // Configuration options to apply to the reranking.
@@ -58,6 +63,7 @@ message QueryRequest {
     uint32 reranker_id = 5;
   }
   RerankingConfig reranking_config = 30;
+
 }
 
 message Attribute {
@@ -86,6 +92,7 @@ message ResponseSet {
     repeated Attribute metadata = 10;
   }
   repeated Document document = 15;
+
 }
 
 message BatchQueryRequest {

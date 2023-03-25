@@ -61,6 +61,8 @@ service QueryService {
       body: "*"
     };
   }
+
+
   // A streamed response interface when lower latency is absolutely critical.
   rpc StreamQuery(com.vectara.serving.BatchQueryRequest)
           returns (stream com.vectara.serving.ResponseSet) {
