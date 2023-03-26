@@ -91,6 +91,9 @@ enum StatusCode {               // Reasons for an error
   QRY__TOO_MANY_RESULT_ROWS = 1595;
   QRY__PARTIAL_RETRIEVAL    = 1600;
 
+  // Generative failures while serving queries.
+  QRY__GEN__NO_QUERY_RESULTS = 1650;
+
   // Connection specs ----------------------------------------------------------
 
   CX_SPECS__INVALID_JSON = 2000;

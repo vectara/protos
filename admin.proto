@@ -92,6 +92,7 @@ enum FilterAttributeType {
   FILTER_ATTRIBUTE_TYPE__REAL_LIST = 20;
   FILTER_ATTRIBUTE_TYPE__TEXT = 25;
   FILTER_ATTRIBUTE_TYPE__TEXT_LIST = 30;
+  FILTER_ATTRIBUTE_TYPE__BOOLEAN = 35;
 }
 
 enum FilterAttributeLevel {
@@ -135,7 +136,7 @@ message ResetCorpusResponse {
 }
 
 message ListCorporaRequest {
-  // A regex to match corpora against.
+  // A regex over the names and descriptions to match corpora against.
   string filter = 2;
   // The maximum results to return.
   uint32 num_results = 4;
