@@ -14,39 +14,74 @@ package com.vectara.admin;
  ******************************************************************************/
 
 message Corpus {
+  // The Corpus ID.
   uint32 id = 1;
+  // The name of the corpus.
   string name = 2;
+  // A description for the corpus.
   string description = 3;
+  // The time at which the corpus was provisioned.
   int64 dt_provision = 4;
+  // Whether the corpus is enabled for use or not.
   bool enabled = 5;
+
+  
   bool swap_qenc = 6;
+  // The default query encoder is designed for normal question-answering types
+  // of queries when the text contains the answer.  Swapping the index encoder
+  // is generally rare, but can be used to help directly match questions to
+  // questions.  This can be useful if you have a FAQ dataset and you want to
+  // directly match the user question to the question in the FAQ.
   bool swap_ienc = 7;
+  // When a corpus is "textless", Vectara does not store the original text.
+  // Instead, Vectara converts the text to vectors and only retains metadata.
   bool textless = 8;
   // Encryption is on by default and cannot be turned off.
   bool encrypted = 9;
 
+  // This is an advanced setting for changing the underlying model type.  The
+  // default value is "1", which is Vectara's high-performing global model.
+  // Underlying models may be swapped for some paying customers by contacting
+  // our support team.
   uint64 encoder_id = 10;
+  // An optional maximum size of the metadata that each document can contain.
   uint32 metadata_max_bytes = 11;
-  string faiss_index_type = 12;
+
 
   repeated Dimension custom_dimensions = 13;
   repeated FilterAttribute filter_attributes = 14;
 }
 
+// A custom dimension is additional numeric metadata that you want to affect
+// Vectara's scoring.  For example, these could be "number of stars" ratings,
+// or other business metrics like a product's margins that you want to use
+// to boost where a result is in the list.
 message Dimension {
+  // The name of the custom dimension.  The maximum length of the name is
+  // 8 characters.
   string name = 1;
+  // A description for the custom dimension.
   string description = 2;
+  
+  // The default weight to give this dimension when running queries. A value of
+  // 0.0, for example, gives it no weight at all.
   double serving_default = 3;
+  // The default value to give to documents for this custom dimension.
   double indexing_default = 4;
 }
 
 // Defines metadata fields that can be used in predicate queries.
 message FilterAttribute {
-  string name = 5;                     // Name, as seen in metadata
-  string description = 10;             // Optional description
-  bool indexed = 15;                   // Index for maximum query speed.
-  FilterAttributeType type = 20;       // Type of the attribute
-  FilterAttributeLevel level = 25;     // Document or part level?
+  // Name of the field, as seen in metadata.
+  string name = 5;
+  // An optional description.
+  string description = 10;
+  // Whether the field is indexed for maximum query speed.
+  bool indexed = 15;
+  // The data type of the attribute.
+  FilterAttributeType type = 20;
+  // Whether the attribute lives at the document or part level.
+  FilterAttributeLevel level = 25;
 }
 
 enum FilterAttributeType {
@@ -57,12 +92,15 @@ enum FilterAttributeType {
   FILTER_ATTRIBUTE_TYPE__REAL_LIST = 20;
   FILTER_ATTRIBUTE_TYPE__TEXT = 25;
   FILTER_ATTRIBUTE_TYPE__TEXT_LIST = 30;
+  FILTER_ATTRIBUTE_TYPE__BOOLEAN = 35;
 }
 
 enum FilterAttributeLevel {
   FILTER_ATTRIBUTE_LEVEL__UNDEFINED = 0;
-  FILTER_ATTRIBUTE_LEVEL__DOCUMENT = 5;         // Document-level attribute
-  FILTER_ATTRIBUTE_LEVEL__DOCUMENT_PART = 10;   // Part-level attribute
+  // Document-level attribute
+  FILTER_ATTRIBUTE_LEVEL__DOCUMENT = 5;
+  // Part-level attribute
+  FILTER_ATTRIBUTE_LEVEL__DOCUMENT_PART = 10;
 }
 
 message CreateCorpusRequest {
@@ -70,12 +108,15 @@ message CreateCorpusRequest {
 }
 
 message CreateCorpusResponse {
+  // The Corpus ID that was created.
   uint32 corpus_id = 1;
   Status status = 2;
 }
 
 message DeleteCorpusRequest {
+  // The Customer ID that contains the corpus to be deleted.
   uint32 customer_id = 1;
+  // The Corpus ID to be deleted.
   uint32 corpus_id = 2;
 }
 
@@ -84,7 +125,9 @@ message DeleteCorpusResponse {
 }
 
 message ResetCorpusRequest {
+  // The Customer ID that contains the corpus to be reset.
   uint32 customer_id = 1;
+  // The Corpus ID to be reset.
   uint32 corpus_id = 2;
 }
 
@@ -93,8 +136,11 @@ message ResetCorpusResponse {
 }
 
 message ListCorporaRequest {
-  string filter = 2;         // A regex to match corpora against.
-  uint32 num_results = 4;    // Maximum results to return
+  // A regex over the names and descriptions to match corpora against.
+  string filter = 2;
+  // The maximum results to return.
+  uint32 num_results = 4;
+  // A key that is passed in to retrieve a specific page of results.
   bytes page_key = 5;
 }
 

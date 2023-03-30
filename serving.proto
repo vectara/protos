@@ -15,14 +15,6 @@ message CustomDimension {
   double weight = 2;
 }
 
-//*VECTARA-PRIVATE-START*//
-// Configuration for a linear interpolation.
-message LinearInterpolation {
-  // Controls the weight given to lexical matches. The final score, S, is then:
-  //     S = (lambda) * (lexical score) + (1 - lambda) * (dense score)
-  float lambda = 1;
-}
-//*VECTARA-PRIVATE-END*//
 
 message CorpusKey {
   // The Customer ID.
@@ -48,40 +40,17 @@ message CorpusKey {
 
   string metadata_filter = 25;
 
-  //*VECTARA-PRIVATE-START*//
-  LinearInterpolation lexical_interpolation_config = 30;
-  //*VECTARA-PRIVATE-END*//
 }
 
 message QueryRequest {
   // The query text to use from the end user.
   string query = 5;
-
-  //*VECTARA-PRIVATE-START*//
-  string query_context = 10;
-  //*VECTARA-PRIVATE-END*//
+  
 
   // The start position in the result set
   uint32 start = 15;
   // The number of results to return.
   uint32 num_results = 20;
-  //*VECTARA-PRIVATE-START*//
-  message ContextConfig {
-    // The amount of context before. Ignored if sentences_before is set.
-    int32 chars_before = 5;
-    // The amount of context after. Ignored if sentences_after is set.
-    int32 chars_after = 10;
-    // The amount of context before, in sentences.
-    int32 sentences_before = 15;
-    // The amount of context after, in sentences.
-    int32 sentences_after = 20;
-    // The tag that wraps the snippet at the start.
-    string start_tag = 25;
-    // The tag that wraps the snippet at the end.
-    string end_tag = 30;
-  }
-  ContextConfig context_config = 22;
-  //*VECTARA-PRIVATE-END*//
 
   // The query is run on all these corpora, and the results are
   // merged together in the response, ranked by score.
@@ -95,31 +64,6 @@ message QueryRequest {
   }
   RerankingConfig reranking_config = 30;
 
-  //*VECTARA-PRIVATE-START*//
-  // Configuration for generating text from the query results.
-  message GeneratorPromptConfig {
-    // The prompt to use. If unset, the system default is used.
-    uint32 prompt_id = 1;
-
-    // [Optional] The generative model to use. If unset, the system default is used.
-    uint32 generative_model_id = 2;
-
-    // [Optional] Maximum number of top query results to use in the prompt.
-    // The actual number will be minimum of this and the number of
-    // results returned by the query.
-    // If unset, defaults to the system configuration for the prompt.
-    uint32 max_query_results = 5;
-
-    // [Optional] If specified, this prompt will be used with the generative
-    // model. A placeholder ${vectara.prompt.query} in the prompt is replaced
-    // with the search query, and the query results are appended at the end
-    // of the prompt.
-    // If unset, defaults to the system configuration for the prompt.
-    string prompt_text = 10;
-  }
-  // Specify multiple generators to interpret the results in different ways.
-  repeated GeneratorPromptConfig prompt = 40;
-  //*VECTARA-PRIVATE-END*//
 }
 
 message Attribute {
@@ -136,12 +80,6 @@ message Response {
   uint32 document_index = 25;
   CorpusKey corpus_key = 30;
 
-  //*VECTARA-PRIVATE-START*//
-  // Within the text, the offset of the result.
-  int32 result_offset = 35;
-  // Within the text, the length of the result.
-  int32 result_length = 40;
-  //*VECTARA-PRIVATE-END*//
 }
 
 message ResponseSet {
@@ -155,15 +93,6 @@ message ResponseSet {
   }
   repeated Document document = 15;
 
-  //*VECTARA-PRIVATE-START*//
-  message GeneratedResponse {
-    // The generated text.
-    string text = 1;
-    // If generation failed, this will represent the error.
-    Status status = 2;
-  }
-  repeated GeneratedResponse generated = 20;
-  //*VECTARA-PRIVATE-END*//
 }
 
 message BatchQueryRequest {
