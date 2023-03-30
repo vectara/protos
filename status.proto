@@ -93,6 +93,7 @@ enum StatusCode {               // Reasons for an error
 
   // Generative failures while serving queries.
   QRY__GEN__NO_QUERY_RESULTS = 1650;
+  QRY__GEN__UNPARSEABLE_MODEL_PARAMS = 1651;
 
   // Connection specs ----------------------------------------------------------
 
