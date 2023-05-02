@@ -15,6 +15,12 @@ message CustomDimension {
   double weight = 2;
 }
 
+// Configuration for a linear interpolation.
+message LinearInterpolation {
+  // Controls the weight given to lexical matches. The final score, S, is then:
+  //     S = (lambda) * (lexical score) + (1 - lambda) * (dense score)
+  float lambda = 1;
+}
 
 message CorpusKey {
   // The Customer ID.
@@ -40,7 +46,21 @@ message CorpusKey {
 
   string metadata_filter = 25;
 
+  LinearInterpolation lexical_interpolation_config = 30;
 }
+
+
+message SummarizationRequest {
+  // The summarizer+prompt combination to use for summarization.
+  uint32 summarizer_prompt_id = 5;
+  // Maximum number of results to summarize.
+  uint32 max_summarized_results = 15;
+  // ISO 639-3 language code for the response, or "auto" to indicate that
+  // the auto-detected language of the incoming query should be used.
+  string response_lang = 20;
+
+}
+
 
 message QueryRequest {
   // The query text to use from the end user.
@@ -51,6 +71,21 @@ message QueryRequest {
   uint32 start = 15;
   // The number of results to return.
   uint32 num_results = 20;
+  message ContextConfig {
+    // The amount of context before. Ignored if sentences_before is set.
+    int32 chars_before = 5;
+    // The amount of context after. Ignored if sentences_after is set.
+    int32 chars_after = 10;
+    // The amount of context before, in sentences.
+    int32 sentences_before = 15;
+    // The amount of context after, in sentences.
+    int32 sentences_after = 20;
+    // The tag that wraps the snippet at the start.
+    string start_tag = 25;
+    // The tag that wraps the snippet at the end.
+    string end_tag = 30;
+  }
+  ContextConfig context_config = 22;
 
   // The query is run on all these corpora, and the results are
   // merged together in the response, ranked by score.
@@ -64,11 +99,26 @@ message QueryRequest {
   }
   RerankingConfig reranking_config = 30;
 
+  // Optionally, one or more requests to summarize the results.
+  repeated SummarizationRequest summary = 35;
+
 }
 
 message Attribute {
   string name = 5;
   string value = 10;
+}
+
+message Summary {
+  // The summary text.
+  string text = 10;
+
+
+  // Statuses are marked “repeated” for consistency and flexibility. A failed
+  // summary should bubble up into the status code of the entire ResponseSet.
+  repeated Status status = 1000;
+  // Populated for streaming requests only.
+  int32 future_id = 1010;
 }
 
 message Response {
@@ -93,6 +143,16 @@ message ResponseSet {
   }
   repeated Document document = 15;
 
+
+  // A summary. If using synchronous APIs for querying, the summary will be
+  // included directly in this response. However, if using the streaming APIs
+  // for query, the summary messages only set the future_id field. Later, as
+  // summary results are computed and returned over the stream, the future_id
+  // within the summary can be used for correlation.
+  repeated Summary summary = 25;
+
+  // Populated for streaming requests only.
+  int32 future_id = 1010;
 }
 
 message BatchQueryRequest {
@@ -100,10 +160,34 @@ message BatchQueryRequest {
 }
 
 message BatchQueryResponse {
+  // The response sets for queries within the batch. If using synchronous APIs
+  // for querying, the response set will be included directly in the response.
+  // However, if using the streaming APIs for query, the response set messages
+  // only set the future_id field. Later, as response sets are computed and
+  // returned over the stream, the future_id within the summary can be used for
+  // correlation.
   repeated ResponseSet response_set = 5;
 
   repeated Status status = 1000;
   PerformanceMetrics metrics = 1005;
+}
+
+// This message contains individual partial results that are returned
+// asynchronously by the streaming interface.
+message QueryResponsePart {
+  // The top-level query response. This is sent exactly once over the stream.
+  BatchQueryResponse batch_query_response = 5;
+
+  // A response set. Use the future_id for correlation. One of these is sent
+  // for every query in the batch.
+  ResponseSet response_set = 10;
+
+  // A summary set. Use the future_id for correlation. One of these is sent
+  // for every summary that's requested.
+  Summary summary = 15;
+
+  // A status code at the level of a BatchQueryResponse.
+  repeated Status status = 1000;
 }
 
 // Basic performance metrics that can be attached to a server response.

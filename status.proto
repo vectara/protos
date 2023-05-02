@@ -91,9 +91,22 @@ enum StatusCode {               // Reasons for an error
   QRY__TOO_MANY_RESULT_ROWS = 1595;
   QRY__PARTIAL_RETRIEVAL    = 1600;
 
+  // The requested summarizer is invalid.
+  QRY__INVALID_SUMMARIZER        = 1655;
+  // The prompt for summarization is invalid.
+  QRY__INVALID_SUMMARIZER_PROMPT = 1660;
+  // The requested language for summarization is invalid. It must be a
+  // valid ISO 639-3 code.
+  QRY__INVALID_SUMMARY_LANG      = 1665;
+  // The requested language for summarization is valid, but not supported
+  // by the Vectara platform.
+  QRY__UNSUPPORTED_SUMMARY_LANG  = 1670;
+  // Fewer than the requested number of results were summarized.
+  QRY__PARTIAL_SUMMARY           = 1675;
+
   // Generative failures while serving queries.
-  QRY__GEN__NO_QUERY_RESULTS = 1650;
-  QRY__GEN__UNPARSEABLE_MODEL_PARAMS = 1651;
+  QRY__GEN__NO_QUERY_RESULTS = 1650 [deprecated = true];
+  QRY__GEN__UNPARSEABLE_MODEL_PARAMS = 1651 [deprecated = true];
 
   // Connection specs ----------------------------------------------------------
 
