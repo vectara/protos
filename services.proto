@@ -65,7 +65,7 @@ service QueryService {
 
   // A streamed response interface when lower latency is absolutely critical.
   rpc StreamQuery(com.vectara.serving.BatchQueryRequest)
-          returns (stream com.vectara.serving.ResponseSet) {
+          returns (stream com.vectara.serving.QueryResponsePart) {
     option (google.api.http) = {
       post: "/v1/stream-query"
       body: "*"
@@ -100,6 +100,14 @@ service AdminService {
       returns (com.vectara.admin.ListCorporaResponse) {
     option (google.api.http) = {
       post: "/v1/list-corpora"
+      body: "*"
+    };
+  }
+
+  rpc ListSummarizers(com.vectara.admin.ListSummarizersRequest)
+    returns (com.vectara.admin.ListSummarizersResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-summarizers"
       body: "*"
     };
   }

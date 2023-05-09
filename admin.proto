@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 import "status.proto";
 
 option go_package = "vectara.com/public/proto/admin";
@@ -114,10 +116,18 @@ message CreateCorpusResponse {
 }
 
 message DeleteCorpusRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "customerId", "corpusId" ] }
+    example: "{ \"corpusId\": 1 }"
+  };
+
   // The Customer ID that contains the corpus to be deleted.
   uint32 customer_id = 1;
   // The Corpus ID to be deleted.
-  uint32 corpus_id = 2;
+  uint32 corpus_id = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
 }
 
 message DeleteCorpusResponse {
@@ -125,10 +135,18 @@ message DeleteCorpusResponse {
 }
 
 message ResetCorpusRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "customerId", "corpusId" ] }
+    example: "{ \"corpusId\": 1 }"
+  };
+
   // The Customer ID that contains the corpus to be reset.
   uint32 customer_id = 1;
   // The Corpus ID to be reset.
-  uint32 corpus_id = 2;
+  uint32 corpus_id = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
 }
 
 message ResetCorpusResponse {
@@ -136,10 +154,23 @@ message ResetCorpusResponse {
 }
 
 message ListCorporaRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "numResults" ] }
+    example: "{ \"numResults\": 10, \"filter\": \"[Tt][Ee][Ss][Tt]\" }"
+  };
+
   // A regex over the names and descriptions to match corpora against.
-  string filter = 2;
+  string filter = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"[Tt][Ee][Ss][Tt]\""
+    }];
+
   // The maximum results to return.
-  uint32 num_results = 4;
+  uint32 num_results = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
+
   // A key that is passed in to retrieve a specific page of results.
   bytes page_key = 5;
 }
