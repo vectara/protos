@@ -104,12 +104,4 @@ service AdminService {
     };
   }
 
-  rpc ListSummarizers(com.vectara.admin.ListSummarizersRequest)
-    returns (com.vectara.admin.ListSummarizersResponse) {
-    option (google.api.http) = {
-      post: "/v1/list-summarizers"
-      body: "*"
-    };
-  }
-
 }
