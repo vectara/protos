@@ -92,15 +92,17 @@ enum StatusCode {               // Reasons for an error
   QRY__PARTIAL_RETRIEVAL    = 1600;
 
   // The summarization prompt is invalid.
-  QRY__SMRY_INVALID_SUMMARIZER_PROMPT = 1660;
+  QRY__SMRY__INVALID_SUMMARIZER_PROMPT = 1660;
   // The requested language for summarization is invalid. It must be a
   // valid ISO 639-3 code.
-  QRY__SMRY_INVALID_SUMMARY_LANG      = 1665;
+  QRY__SMRY__INVALID_SUMMARY_LANG      = 1665;
   // The requested language for summarization is valid, but not supported
   // by the Vectara platform.
-  QRY__SMRY_UNSUPPORTED_SUMMARY_LANG  = 1670;
+  QRY__SMRY__UNSUPPORTED_SUMMARY_LANG  = 1670;
   // Fewer than the requested number of results were summarized.
-  QRY__SMRY_PARTIAL_SUMMARY           = 1675;
+  QRY__SMRY__PARTIAL_SUMMARY           = 1675;
+  // There were no query results to generate the summary.
+  QRY__SMRY__NO_QUERY_RESULTS          = 1680;
 
   // Generative failures while serving queries.
   QRY__GEN__NO_QUERY_RESULTS = 1650 [deprecated = true];
