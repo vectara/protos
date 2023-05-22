@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 import "status.proto";
 
 option java_package = "com.vectara.serving";
@@ -55,7 +57,7 @@ message SummarizationRequest {
   uint32 summarizer_prompt_id = 5;
   // Maximum number of results to summarize.
   uint32 max_summarized_results = 15;
-  // ISO 639-3 language code for the response, or "auto" to indicate that
+  // ISO 639-1 or ISO 639-3 language code for the response, or "auto" to indicate that
   // the auto-detected language of the incoming query should be used.
   string response_lang = 20;
 
@@ -72,18 +74,55 @@ message QueryRequest {
   // The number of results to return.
   uint32 num_results = 20;
   message ContextConfig {
-    // The amount of context before. Ignored if sentences_before is set.
-    int32 chars_before = 5;
-    // The amount of context after. Ignored if sentences_after is set.
-    int32 chars_after = 10;
-    // The amount of context before, in sentences.
-    int32 sentences_before = 15;
-    // The amount of context after, in sentences.
-    int32 sentences_after = 20;
-    // The tag that wraps the snippet at the start.
-    string start_tag = 25;
-    // The tag that wraps the snippet at the end.
-    string end_tag = 30;
+    // chars_before is used for showing the end user the characters leading up
+    // to the result snippet.  This can help the end-user understand the
+    // context of that result. Ignored if sentences_before is set.
+    int32 chars_before = 5 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "30"
+      }];
+
+    // chars_after is used for showing the end user the characters after the
+    // result snippet.  This can help the end-user understand the context of
+    // that result. Ignored if sentences_before is set.
+    int32 chars_after = 10 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "30"
+      }];
+
+    // sentences_before is used for showing the end user the sentences leading
+    // up to the result snippet.  This can help the end-user understand the
+    // context of that result.
+    int32 sentences_before = 15 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "3"
+      }];
+
+    // sentences_after is used for showing the end user the sentences leading
+    // up to the result snippet.  This can help the end-user understand the
+    // context of that result.
+    int32 sentences_after = 20 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "3"
+      }];
+
+    // The tag that wraps the snippet at the start. Often this is used to
+    // provide a start HTML/XML tag or some other delimiter you can use in an
+    // application to understand where to provide highlighting in your UI and
+    // understand where the context before ends and the snippet begins.
+    string start_tag = 25 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"<b>\""
+      }];
+
+    // The tag that wraps the snippet at the end. Often this is used to provide
+    // a start HTML/XML tag or some other delimiter you can use in an
+    // application to understand where to provide highlighting in your UI and
+    // understand where the snippet ends and the context after begins.
+    string end_tag = 30 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"</b>\""
+      }];
   }
   ContextConfig context_config = 22;
 

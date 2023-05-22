@@ -104,4 +104,371 @@ service AdminService {
     };
   }
 
+  rpc Sleep(com.vectara.admin.SleepRequest)
+          returns (com.vectara.admin.SleepResponse) {
+    option (google.api.http) = {
+      post: "/v1/sleep"
+      body: "*"
+    };
+  }
+
+  // Return information about a corpus.
+  rpc CorpusInfo(com.vectara.admin.CorpusInfoRequest)
+          returns (com.vectara.admin.CorpusInfoResponse) {
+    option (google.api.http) = {
+      post: "/v1/corpus-info"
+      body: "*"
+    };
+  }
+
+  // Return information about corpora.
+  rpc ReadCorpus(com.vectara.admin.ReadCorpusRequest)
+          returns (com.vectara.admin.ReadCorpusResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-corpus"
+      body: "*"
+    };
+  }
+
+  // Read time series corpus size.
+  // @Action: READ_CORPUS_SIZE or READ_CORPUS_SIZE_ANY
+  rpc ReadCorpusSize(com.vectara.admin.ReadCorpusSizeRequest)
+          returns (com.vectara.admin.ReadCorpusSizeResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-corpus-size"
+      body: "*"
+    };
+  }
+
+  // @Action: COMPUTE_CORPUS_SIZE or COMPUTE_CORPUS_SIZE_ANY
+  rpc ComputeCorpusSize(com.vectara.admin.ComputeCorpusSizeRequest)
+          returns (com.vectara.admin.ComputeCorpusSizeResponse) {
+    option (google.api.http) = {
+      post: "/v1/compute-corpus-size"
+      body: "*"
+    };
+  }
+
+  rpc ComputeAccountSize(com.vectara.admin.ComputeAccountSizeRequest)
+        returns (com.vectara.admin.ComputeAccountSizeResponse) {
+    option (google.api.http) = {
+      post: "/v1/compute-account-size"
+      body: "*"
+    };
+  }
+
+  rpc ReadAccountSize(com.vectara.admin.ReadAccountSizeRequest)
+        returns (com.vectara.admin.ReadAccountSizeResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-account-size"
+      body: "*"
+    };
+  }
+
+  // Return time series corpus recall.
+  // @Action: READ_CORPUS_RECALL or READ_CORPUS_RECALL_ANY
+  rpc ReadCorpusRecall(com.vectara.admin.ReadCorpusRecallRequest)
+          returns (com.vectara.admin.ReadCorpusRecallResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-corpus-recall"
+      body: "*"
+    };
+  }
+
+  // @Action: LIST_CORPUS or LIST_ANY
+  rpc ListUsers(com.vectara.admin.ListUsersRequest)
+          returns (com.vectara.admin.ListUsersResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-users"
+      body: "*"
+    };
+  }
+
+  rpc ManageUser(com.vectara.admin.ManageUserRequest)
+          returns (com.vectara.admin.ManageUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/manage-user"
+      body: "*"
+    };
+  }
+
+  // @Action: COMPUTE_CORPUS_RECALL or COMPUTE_CORPUS_RECALL_ANY
+  rpc ComputeCorpusRecall(com.vectara.admin.ComputeRecallRequest)
+          returns (stream com.vectara.admin.ComputeRecallResponse) {
+    option (google.api.http) = {
+      post: "/v1/compute-corpus-recall"
+      body: "*"
+    };
+  }
+
+  // @Action: COMPUTE_CORPUS_BACKGROUND
+  rpc ComputeCorpusBackground(com.vectara.admin.ComputeBackgroundRequest)
+          returns (stream com.vectara.admin.ComputeBackgroundResponse) {
+    option (google.api.http) = {
+      post: "/v1/compute-corpus-background"
+      body: "*"
+    };
+  }
+
+  // @Action: ASSIGN_CUSTOMER_ROLE{_SELF|_ANY}, ASSIGN_CORPUS_ROLE{_SELF|_ANY}
+  rpc AssignRole(com.vectara.admin.RoleRequestList)
+          returns (com.vectara.admin.RoleResponseList) {
+    option (google.api.http) = {
+      post: "/v1/assign-role"
+      body: "*"
+    };
+  }
+
+  // @Action: REMOVE_CUSTOMER_ROLE{_SELF|_ANY}, REMOVE_CORPUS_ROLE{_SELF|_ANY}
+  rpc RemoveRole(com.vectara.admin.RoleRequestList)
+          returns (com.vectara.admin.RoleResponseList) {
+    option (google.api.http) = {
+      post: "/v1/remove-role"
+      body: "*"
+    };
+  }
+
+  // @Action: TRANSFER_OWNERSHIP_CUSTOMER_ROLE{_SELF|_ANY}, TRANSFER_OWNERSHIP_CORPUS_ROLE{_SELF|_ANY}
+  rpc TransferOwnership(com.vectara.admin.RoleRequestList)
+          returns (com.vectara.admin.RoleResponseList) {
+    option (google.api.http) = {
+      post: "/v1/transfer-ownership"
+      body: "*"
+    };
+  }
+
+    // @Action: LIST_OWN_CORPORA or LIST_ANY_CORPORA
+  rpc ListCorpusRoles(com.vectara.admin.ListCorpusRolesRequest)
+          returns (com.vectara.admin.ListCorpusRolesResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-corpus-roles"
+      body: "*"
+    };
+  }
+
+
+  // @Action: LIST_OWN_CORPORA or LIST_ANY_CORPORA
+  rpc ListCorpusDefaultRoles(com.vectara.admin.ListCorpusDefaultRolesRequest)
+  returns (com.vectara.admin.ListCorpusRolesResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-corpus-default-roles"
+      body: "*"
+    };
+  }
+
+  // @Action: LIST_OWN_CORPORA or LIST_ANY_CORPORA
+  rpc ListCustomerRoles(com.vectara.admin.ListCustomerRolesRequest)
+  returns (com.vectara.admin.ListCustomerRolesResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-customer-roles"
+      body: "*"
+    };
+  }
+
+  // ClientData is essentially a key value pair which is used to store important
+  // client info such as window placements, most recently used corpora list etc.
+  // The intention is to make it availble on next login
+  rpc GetClientData(com.vectara.admin.GetClientDataRequest) returns (com.vectara.admin.GetClientDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/get-clientdata"
+      body: "*"
+    };
+  }
+
+  rpc SetClientData(com.vectara.admin.SetClientDataRequest) returns (com.vectara.admin.SetClientDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/set-clientdata"
+      body: "*"
+    };
+  }
+
+  rpc DeleteClientData(com.vectara.admin.DeleteClientDataRequest) returns (com.vectara.admin.DeleteClientDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-clientdata"
+      body: "*"
+    };
+  }
+
+  rpc UpdateCorpusEnablement(com.vectara.admin.UpdateCorpusEnablementRequest) returns (com.vectara.admin.UpdateCorpusEnablementResponse) {
+    option (google.api.http) = {
+      post: "/v1/update-corpus-enablement"
+      body: "*"
+    };
+  }
+
+  // Get metric usage of either sliding windows or between two timestamps
+  rpc GetUsageMetrics(com.vectara.admin.UsageMetricsRequest) returns (com.vectara.admin.UsageMetricsResponse){
+    option (google.api.http) = {
+      post: "/v1/get-usage-metrics"
+      body: "*"
+    };
+  }
+
+  // Check whether a user has a specific permission or not
+  rpc HasPermissions(com.vectara.admin.HasPermissionsRequest) returns (com.vectara.admin.HasPermissionsResponse) {
+    option (google.api.http) = {
+      post: "/v1/has-permissions"
+      body: "*"
+    };
+  }
+
+  rpc HasCorpusPermissions(com.vectara.admin.HasCorpusPermissionsRequest) returns (com.vectara.admin.HasCorpusPermissionsResponse) {
+    option (google.api.http) = {
+      post: "/v1/has-corpus-permissions"
+      body: "*"
+    };
+  }
+
+  rpc GetCorpusAuthUsers(com.vectara.admin.GetCorpusAuthUsersRequest) returns (com.vectara.admin.GetCorpusAuthUsersResponse) {
+    option (google.api.http) = {
+      post: "/v1/get-corpus-auth-users"
+      body: "*"
+    };
+  }
+
+  rpc ManageAppClient(com.vectara.admin.ManageAppClientRequest) returns (com.vectara.admin.ManageAppClientResponse) {
+    option (google.api.http) = {
+      post: "/v1/manage-app-client"
+      body: "*"
+    };
+  }
+
+  rpc ListAppClients(com.vectara.admin.ListAppClientsRequest) returns (com.vectara.admin.ListAppClientsResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-app-clients"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCustomer(com.vectara.admin.DeleteCustomerRequest) returns (com.vectara.admin.DeleteCustomerResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-customer"
+      body: "*"
+    };
+  }
+
+  rpc GetUser(com.vectara.admin.GetUserRequest) returns (com.vectara.admin.GetUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/get-user"
+      body: "*"
+    };
+  }
+
+  rpc ListInvoices(com.vectara.admin.ListInvoicesRequest) returns (com.vectara.admin.ListInvoicesResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-invoices"
+      body: "*"
+    };
+  }
+
+  rpc readBillingData(com.vectara.admin.BillingDataRequest) returns (com.vectara.admin.BillingDataResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-billing-data"
+      body: "*"
+    };
+  }
+
+  rpc updateBillingAddress(com.vectara.admin.UpdateBillingAddressRequest) returns (com.vectara.admin.UpdateBillingAddressResponse) {
+    option (google.api.http) = {
+      post: "/v1/update-billing-address"
+      body: "*"
+    };
+  }
+
+  rpc updatePaymentDetails(com.vectara.admin.UpdatePaymentDetailsRequest) returns (com.vectara.admin.UpdatePaymentDetailsResponse) {
+    option (google.api.http) = {
+      post: "/v1/update-paymnent-details"
+      body: "*"
+    };
+  }
+
+  rpc readBillingPeriodDetails(com.vectara.admin.ReadBillingPeriodDetailsRequest) returns (com.vectara.admin.ReadBillingPeriodDetailsResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-billing-period-details"
+      body: "*"
+    };
+  }
+
+  // Read the details of a customer plan.
+  rpc ReadCurrentCustomerPlan(com.vectara.admin.ReadCustomerPlanDetailsRequest)
+          returns (com.vectara.admin.ReadCustomerPlanDetailsResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-current-customer-plan"
+      body: "*"
+    };
+  }
+
+  rpc ChangeCustomerPlan(com.vectara.admin.ChangeCustomerPlanRequest)
+    returns (com.vectara.admin.ChangeCustomerPlanResponse) {
+    option (google.api.http) = {
+      post: "/v1/change-customer-plan"
+      body: "*"
+    };
+  }
+
+  // Read enabled features both at the account level and the corpus level.
+  // Features are units of functionality that can be selectively turned on
+  // for specific customers. They can also be associated with billing plans.
+  //
+  // @Action: READ_ACCOUNT_FEATURES, READ_CORPUS_FEATURES{_SELF|_ANY}
+  rpc ReadFeatures(com.vectara.admin.ReadFeaturesRequest) returns (com.vectara.admin.ReadFeaturesResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-features"
+      body: "*"
+    };
+  }
+
+  rpc CreateApiKey(com.vectara.admin.CreateApiKeyRequest) returns (com.vectara.admin.CreateApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/create-api-key"
+      body: "*"
+    };
+  }
+
+  rpc EnableApiKey(com.vectara.admin.EnableApiKeyRequest) returns (com.vectara.admin.EnableApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/enable-api-key"
+      body: "*"
+    };
+  }
+
+  rpc DeleteApiKey(com.vectara.admin.DeleteApiKeyRequest) returns (com.vectara.admin.DeleteApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-api-key"
+      body: "*"
+    };
+  }
+
+  rpc ListApiKeys(com.vectara.admin.ListApiKeysRequest) returns (com.vectara.admin.ListApiKeysResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-api-keys"
+      body: "*"
+    };
+  }
+
+  rpc ReadApiKeys(com.vectara.admin.ReadApiKeyRequest) returns (com.vectara.admin.ReadApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-api-keys"
+      body: "*"
+    };
+  }
+
+  // Reads usage stats for all the features such as corpora count, query count,
+  // user count, etc.
+  rpc ReadCurrentPeriodUsageStats(com.vectara.admin.ReadUsageStatsRequest) returns (com.vectara.admin.ReadUsageStatsResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-current-period-usage-stats"
+      body: "*"
+    };
+  }
+
+  // Checks whether the customer has a default payment source associated with their account
+  // or not.
+  rpc HasDefaultPaymentSource(com.vectara.admin.HasDefaultPaymentSourceRequest) returns (com.vectara.admin.HasDefaultPaymentSourceResponse) {
+    option (google.api.http) = {
+      post: "/v1/has-default-payment-source"
+      body: "*"
+    };
+  }
+  //*VECTARA-PRIVATE-END*//
 }
