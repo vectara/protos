@@ -7,7 +7,48 @@ option go_package = "vectara.com/public/proto/common";
 
 package com.vectara;
 
-// Request to delete a document from an index.
+// Languages supported by Vectara.
+message Language {
+  enum Code {
+    UNKNOWN = 0;
+
+    // English.
+    ENG = 1;
+    // German.
+    DEU = 2;
+    // France.
+    FRA = 3;
+    // Chinese.
+    ZHO = 4;
+    // Korean.
+    KOR = 5;
+    // Arabic.
+    ARA = 6;
+    // Russian.
+    RUS = 7;
+    // Thai.
+    THA = 8;
+    // Dutch.
+    NLD = 9;
+    // Italian.
+    ITA = 10;
+    // Portuguese.
+    POR = 11;
+    // Spanish.
+    SPA = 12;
+    // Japanese.
+    JPN = 13;
+    // Polish.
+    POL = 14;
+    // Turkish.
+    TUR = 15;
+
+    // Let the platform detect the language.
+    AUTO = 5000;
+  }
+}
+
+  // Request to delete a document from an index.
 message DeleteDocumentRequest {
   // The Customer ID to issue the request for.
   int64 customer_id = 1;
