@@ -16,7 +16,7 @@ message Language {
     ENG = 1;
     // German.
     DEU = 2;
-    // France.
+    // French.
     FRA = 3;
     // Chinese.
     ZHO = 4;

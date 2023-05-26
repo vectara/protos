@@ -53,8 +53,8 @@ message CorpusKey {
 
 
 message SummarizationRequest {
-  // The summarizer+prompt combination to use for summarization.
-  uint32 summarizer_prompt_id = 5;
+  // The name of the summarizer+prompt combination to use for summarization.
+  string summarizer_prompt_name = 3;
   // Maximum number of results to summarize.
   uint32 max_summarized_results = 15;
   // ISO 639-1 or ISO 639-3 language code for the response, or "auto" to indicate that
