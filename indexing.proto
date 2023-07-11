@@ -38,8 +38,15 @@ message Document {
   string title = 2;
   // An optional description for the document.
   string description = 3;
-  // Metadata about the document. This should be a json string, and it can be
-  // retrieved at query time.
+  // Metadata about the document. This is a string containing a JSON
+  // object. It can be an arbitrary object except that any keys 
+  // that match a metadata filter of the corpus must have the
+  // same value type as metadata filter's value type.
+  //
+  // A query can use this object to filter if the object's key/value pair
+  // has been defined as a metadata filter.
+  //
+  // The whole object will be in the query result.
   string metadata_json = 4;
   // A list of custom dimension values that are included in the generated
   // representation of all sections.
