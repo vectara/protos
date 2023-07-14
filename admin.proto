@@ -17,14 +17,17 @@ package com.vectara.admin;
 
 message Corpus {
   // The Corpus ID.
+  // This value is ignored during Corpus creation.
   uint32 id = 1;
   // The name of the corpus.
   string name = 2;
   // A description for the corpus.
   string description = 3;
   // The time at which the corpus was provisioned.
+  // This value is ignored during Corpus creation.
   int64 dt_provision = 4;
   // Whether the corpus is enabled for use or not.
+  // This value is ignored during Corpus creation.
   bool enabled = 5;
 
   
