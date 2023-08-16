@@ -62,14 +62,9 @@ service QueryService {
     };
   }
 
-
   // A streamed response interface when lower latency is absolutely critical.
   rpc StreamQuery(com.vectara.serving.BatchQueryRequest)
           returns (stream com.vectara.serving.QueryResponsePart) {
-    option (google.api.http) = {
-      post: "/v1/stream-query"
-      body: "*"
-    };
   }
 }
 
