@@ -42,6 +42,32 @@ message Language {
     POL = 14;
     // Turkish.
     TUR = 15;
+    // Vietnamese.
+    VIE = 16;
+    // Indonesian.
+    IND = 17;
+    // Czech.
+    CES = 18;
+    // Ukrainian.
+    UKR = 19;
+    // Greek.
+    ELL = 20;
+    // Hebrew.
+    HEB = 21;
+    // Farsi/Persian.
+    FAS = 22;
+    // Hindi.
+    HIN = 23;
+    // Urdu.
+    URD = 24;
+    // Swedish.
+    SWE = 25;
+    // Bengali.
+    BEN = 26;
+    // Malay.
+    MSA = 27;
+    // Romanian.
+    RON = 28;
 
     // Let the platform detect the language.
     AUTO = 5000;
