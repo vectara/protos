@@ -132,9 +132,15 @@ message QueryRequest {
 
   // Configuration options to apply to the reranking.
   message RerankingConfig {
-    // Which reranking model to use if reranking.  Currently, the only ID
-    // available is ID 272725717
+    // Which reranking model to use if reranking.  Currently, the only IDs
+    // available are:
+    // - 272725717, HuggingFace Open Source x-attentional reranker
+    // - 272725718, Maximum Marginal Relevance Reranker
     uint32 reranker_id = 5;
+
+    // Reranker-specific parameters.  The numbering starts from 100, and moves
+    // upwards in increments of 5.
+    optional MMRConfig mmr_config = 100;
   }
   RerankingConfig reranking_config = 30;
 
@@ -243,4 +249,23 @@ message PerformanceMetrics {
   uint32 userdata_retrieval_ms = 15;
   // How long it took to rerank the results.
   uint32 rerank_ms = 20;
+}
+
+//Configuration for the maximum marginal relevance (MMR) reranker.
+message MMRConfig {
+  // Intuitively, this bias controls how much the reranker should favor
+  // diversity over relevance. A bias of 1 means that relevance is not
+  // considered at all, while a bias of 0 means that diversity is not
+  // considered. A score of 0.8 means that diversity counts for 80% of the
+  // score, and relevance for 20%.
+  //
+  // The bias is defined as (1 - lambda), where lambda is defined as in
+  // the original paper, "The Use of MMR, Diversity-Based Reranking for
+  // Reordering Documents and Producing Summaries" by Carbonell and Goldstein,
+  // 1998.
+  float diversityBias = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "The diversity bias. Higher values indicate more diversity."
+      example: "0.3"
+    }];
 }
