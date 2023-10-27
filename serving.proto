@@ -248,7 +248,7 @@ message MMRConfig {
   // the original paper, "The Use of MMR, Diversity-Based Reranking for
   // Reordering Documents and Producing Summaries" by Carbonell and Goldstein,
   // 1998.
-  float diversityBias = 5 [
+  float diversity_bias = 5 [
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
       description: "The diversity bias. Higher values indicate more diversity."
       example: "0.3"
