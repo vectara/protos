@@ -177,7 +177,6 @@ message ResponseSet {
   }
   repeated Document document = 15;
 
-
   // A summary. If using synchronous APIs for querying, the summary will be
   // included directly in this response. However, if using the streaming APIs
   // for query, the summary messages only set the future_id field. Later, as
