@@ -191,4 +191,13 @@ enum StatusCode {               // Reasons for an error
 
   IDX__TRANSIENT_PARTIAL_DELETION_FAILURE = 5000;
   IDX__PERMANENT_PARTIAL_DELETION_FAILURE = 5001;
+
+  // Calibration ---------------------------------------------------------------
+
+  CALB__INVALID_JSON = 5500;
+  CALB__INVALID_SPEC = 5501;
+  CALB__UNREGISTERED_TYPE = 5505;
+  CALB__MISSING_SPEC = 5510;
+  CALB__MISSING_TYPE = 5511;
+  CALB__UNPARSABLE_SPEC = 5515;
 }
