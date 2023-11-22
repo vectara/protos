@@ -99,4 +99,18 @@ service AdminService {
     };
   }
 
+  rpc ListJobs(com.vectara.admin.ListJobsRequest) returns (com.vectara.admin.ListJobsResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-jobs"
+      body: "*"
+    };
+  }
+
+  rpc ReplaceCorpusFilterAttrs(com.vectara.admin.ReplaceCorpusFilterAttrsRequest) returns (com.vectara.admin.ReplaceCorpusFilterAttrsResponse) {
+    option (google.api.http) = {
+      post: "/v1/replace-corpus-filter-attrs"
+      body: "*"
+    };
+  }
+
 }

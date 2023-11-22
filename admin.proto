@@ -187,4 +187,20 @@ message ListCorporaResponse {
   Status status = 1000;
 }
 
+message ReplaceCorpusFilterAttrsRequest {
+  // The corpus for which to update filters.
+  uint32 corpus_id = 1;
+  // The filters to set. The existing filters are replaced with this list of filters.
+  repeated FilterAttribute filter_attributes = 10;
+}
+
+message ReplaceCorpusFilterAttrsResponse {
+  Status status = 1000;
+
+  // If 'status' represents success, this contains the ID assigned to the job
+  // for updating the list of filters. This ID can be used to query the status
+  // of the job.
+  string job_id = 10;
+}
+
 
