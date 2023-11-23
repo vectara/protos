@@ -147,6 +147,21 @@ message QueryRequest {
   // Optionally, one or more requests to summarize the results.
   repeated SummarizationRequest summary = 35;
 
+}
+
+message Attribute {
+  string name = 5;
+  string value = 10;
+}
+
+message Summary {
+  // The summary text.
+  string text = 10;
+
+  // ISO 639 language code of the summary. If the requested language was set to "AUTO", the
+  // summary language is the same as the auto-detected language of the query.
+  string lang = 15;
+
 
   // Statuses are marked “repeated” for consistency and flexibility. A failed
   // summary should bubble up into the status code of the entire ResponseSet.
