@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "admin.proto";
+import "admin_job.proto";
 
 import "common.proto";
 import "indexing.proto";
@@ -95,6 +96,20 @@ service AdminService {
       returns (com.vectara.admin.ListCorporaResponse) {
     option (google.api.http) = {
       post: "/v1/list-corpora"
+      body: "*"
+    };
+  }
+
+  rpc ListJobs(com.vectara.admin.ListJobsRequest) returns (com.vectara.admin.ListJobsResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-jobs"
+      body: "*"
+    };
+  }
+
+  rpc ReplaceCorpusFilterAttrs(com.vectara.admin.ReplaceCorpusFilterAttrsRequest) returns (com.vectara.admin.ReplaceCorpusFilterAttrsResponse) {
+    option (google.api.http) = {
+      post: "/v1/replace-corpus-filter-attrs"
       body: "*"
     };
   }
