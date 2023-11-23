@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "admin.proto";
+import "admin_job.proto";
 
 import "common.proto";
 import "indexing.proto";
