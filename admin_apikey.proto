@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+import "status.proto";
+
+option go_package = "vectara.com/public/proto/admin";
+
+option java_package = "com.vectara.admin";
+option java_outer_classname = "AdminApiKeyProtos";
+
+package com.vectara.admin;
+
+/******************************************************************************
+  API Keys
+ ******************************************************************************/
+// Types of ApiKey.
+enum ApiKeyType {
+  API_KEY_TYPE__UNDEFINED = 0;
+  // ApiKey for serving. Only gives access to query data.
+  API_KEY_TYPE__SERVING = 1;
+  // ApiKey for serving and indexing. Gives access to both query and index data.
+  API_KEY_TYPE__SERVING_INDEXING = 2;
+}
+
+// Status of ApiKey.
+enum ApiKeyStatus {
+  UNKNOWN = 0;
+  ENABLED = 1;
+  DISABLED = 2;
+  DELETED = 3;
+}
+
+
+// This request can be used to create one or more ApiKeys.
+// Every ApiKey is bound to one or more corpora.
+message CreateApiKeyRequest {
+  // ApiKey data to create the ApiKey bound to one or more corpora.
+  message ApiKeyCorpus {
+    // Description of the ApiKey.
+    string description = 1;
+    // Type of the ApiKey.
+    ApiKeyType api_key_type = 3;
+    // List of corpus ids to bind the ApiKey to.
+    repeated uint32 corpus_id = 2;
+  }
+  // List of ApiKey data to create.
+  repeated ApiKeyCorpus api_key_data = 1;
+}
+
+// Response of the CreateApiKeyRequest.
+message CreateApiKeyResponse {
+  // A valid key or Status of the ApiKey creation (in case of failure).
+  message ApiKeyOrStatus {
+    // A valid ApiKey.
+    string key_id = 1;
+    // Status of the ApiKey creation.
+    Status status = 2;
+  }
+  // List of ApiKeyOrStatus corresponding to the list of ApiKey data in request.
+  repeated ApiKeyOrStatus response = 1;
+}
+
