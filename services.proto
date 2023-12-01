@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "admin_apikey.proto";
 import "admin.proto";
 import "admin_job.proto";
 
@@ -110,6 +111,13 @@ service AdminService {
   rpc ReplaceCorpusFilterAttrs(com.vectara.admin.ReplaceCorpusFilterAttrsRequest) returns (com.vectara.admin.ReplaceCorpusFilterAttrsResponse) {
     option (google.api.http) = {
       post: "/v1/replace-corpus-filter-attrs"
+      body: "*"
+    };
+  }
+
+  rpc CreateApiKey(com.vectara.admin.CreateApiKeyRequest) returns (com.vectara.admin.CreateApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/create-api-key"
       body: "*"
     };
   }
