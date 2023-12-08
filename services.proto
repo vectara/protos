@@ -3,6 +3,8 @@ syntax = "proto3";
 import "admin_apikey.proto";
 import "admin.proto";
 import "admin_job.proto";
+import "admin_security.proto";
+import "admin_user.proto";
 
 import "common.proto";
 import "indexing.proto";
@@ -105,6 +107,14 @@ service AdminService {
   rpc ListJobs(com.vectara.admin.ListJobsRequest) returns (com.vectara.admin.ListJobsResponse) {
     option (google.api.http) = {
       post: "/v1/list-jobs"
+      body: "*"
+    };
+  }
+
+  rpc ManageUser(com.vectara.admin.ManageUserRequest)
+          returns (com.vectara.admin.ManageUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/manage-user"
       body: "*"
     };
   }
