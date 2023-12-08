@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+import "admin_security.proto";
+import "status.proto";
+
+option go_package = "vectara.com/public/proto/admin";
+
+option java_package = "com.vectara.admin";
+option java_outer_classname = "AdminUserProtos";
+
+package com.vectara.admin;
+
+// Represents a user in an account.
+// A user is a person or an application that has access to the system.
+message User {
+  // Unique id for the user. This is required for deleting, enabling, disabling a user
+  // or to reset their password. This can be retrieved via ListUsers API or it is also
+  // returned as part of ManageUser API when a new user is created.
+  uint32 id = 1;
+  // Unique GUID based identifier for the user.
+  string sub = 2;
+  // Name of the user. This is required for creating a new user.
+  string handle = 3;
+  // Type of user
+  UserType type = 4;
+  // Comment about the user
+  string comment = 5;
+  // Seconds since epoch when the user was created.
+  int64 ts_create = 6;
+  // Id of the user who created this user.
+  uint32 id_create = 7;
+  // Email address associated with the user. This is required for creating a new user.
+  string email = 10;
+  // Status of the user such as ACTIVE, DISABLED etc.
+  UserStatus user_status = 11;
+  // List of customer level roles
+  repeated CustomerRole role = 12;
+}
+
+enum UserType {
+  USER_TYPE__NONE = 0;
+  // A normal user
+  USER_TYPE__USER = 1;
+  // A user that is authenticated by an external identity provider such as Google etc.
+  USER_TYPE__FEDERATED_USER = 2;
+  // An application client. Please note that this doesn't work with ManageUser API.
+  // To create an App Client, use the ManageAppClient API.
+  USER_TYPE__APP_CLIENT = 3;
+}
+
+enum UserStatus {
+  USER_STATUS__NONE = 0;
+  // User is active
+  USER_STATUS__ACTIVE = 1;
+  // User is disabled
+  USER_STATUS__DISABLED = 2;
+}
+
+enum UserActionType {
+  USER_ACTION_TYPE__NONE = 0;
+  // Add User
+  USER_ACTION_TYPE__ADD = 1;
+  // Delete User
+  USER_ACTION_TYPE__DELETE = 2;
+  // Disable User
+  USER_ACTION_TYPE__DISABLE = 3;
+  // Enable User
+  USER_ACTION_TYPE__ENABLE = 4;
+  // Reset User Password
+  USER_ACTION_TYPE__RESET_PASSWORD = 5;
+  // Edit User Roles
+  USER_ACTION_TYPE__EDIT_ROLE = 6;
+}
+
+message ManageUserRequest {
+  // User and action to be performed on user
+  message UserAction {
+    // User object
+    User user = 1;
+    // Action to be performed on user
+    UserActionType user_action_type = 2;
+  }
+  // List of users and actions to be performed on them
+  repeated UserAction user_action = 1;
+}
+
+message ManageUserResponse {
+  // List of users and their status
+  message UserResponse {
+    // User object
+    User user = 1;
+    // Status response of the request such as OK, FAILED etc.
+    Status status = 1000;
+  }
+  // List of users alongwith relative status such as OK, FAILED etc.
+  repeated UserResponse response = 1;
+}
+
+
