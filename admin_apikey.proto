@@ -123,3 +123,19 @@ message DeleteApiKeyResponse {
   repeated Status status = 1000;
 }
 
+message EnableApiKeyRequest {
+  message ApiKeyEnablement {
+    // ApiKey id to enable or disable.
+    string key_id = 1;
+    // Enable or disable using this variable
+    bool enable = 2;
+  }
+  // List of ApiKey ids to enable or disable.
+  repeated ApiKeyEnablement key_enablement = 1;
+}
+
+message EnableApiKeyResponse {
+  // List of Status such as OK, FAILED corresponding to the EnableApiKeyRequest.
+  repeated Status status = 1000;
+}
+
