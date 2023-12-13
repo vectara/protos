@@ -122,4 +122,25 @@ service AdminService {
     };
   }
 
+  rpc EnableApiKey(com.vectara.admin.EnableApiKeyRequest) returns (com.vectara.admin.EnableApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/enable-api-key"
+      body: "*"
+    };
+  }
+
+  rpc DeleteApiKey(com.vectara.admin.DeleteApiKeyRequest) returns (com.vectara.admin.DeleteApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-api-key"
+      body: "*"
+    };
+  }
+
+  rpc ListApiKeys(com.vectara.admin.ListApiKeysRequest) returns (com.vectara.admin.ListApiKeysResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-api-keys"
+      body: "*"
+    };
+  }
+
 }
