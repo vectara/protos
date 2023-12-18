@@ -10,7 +10,7 @@ import "common.proto";
 import "indexing.proto";
 import "serving.proto";
 import "status.proto";
-import "list_documents.proto";
+// import "list_documents.proto";
 import "google/api/annotations.proto";
 
 option java_package = "com.vectara";
