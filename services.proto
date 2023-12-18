@@ -10,6 +10,7 @@ import "common.proto";
 import "indexing.proto";
 import "serving.proto";
 import "status.proto";
+import "list_documents.proto";
 import "google/api/annotations.proto";
 
 option java_package = "com.vectara";
@@ -110,6 +111,14 @@ service AdminService {
     };
   }
 
+  rpc ListUsers(com.vectara.admin.ListUsersRequest)
+          returns (com.vectara.admin.ListUsersResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-users"
+      body: "*"
+    };
+  }
+
   rpc ManageUser(com.vectara.admin.ManageUserRequest)
           returns (com.vectara.admin.ManageUserResponse) {
     option (google.api.http) = {
@@ -132,4 +141,26 @@ service AdminService {
     };
   }
 
+  rpc EnableApiKey(com.vectara.admin.EnableApiKeyRequest) returns (com.vectara.admin.EnableApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/enable-api-key"
+      body: "*"
+    };
+  }
+
+  rpc DeleteApiKey(com.vectara.admin.DeleteApiKeyRequest) returns (com.vectara.admin.DeleteApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-api-key"
+      body: "*"
+    };
+  }
+
+  rpc ListApiKeys(com.vectara.admin.ListApiKeysRequest) returns (com.vectara.admin.ListApiKeysResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-api-keys"
+      body: "*"
+    };
+  }
+
 }
+
