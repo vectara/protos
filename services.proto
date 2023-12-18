@@ -3,11 +3,14 @@ syntax = "proto3";
 import "admin_apikey.proto";
 import "admin.proto";
 import "admin_job.proto";
+import "admin_security.proto";
+import "admin_user.proto";
 
 import "common.proto";
 import "indexing.proto";
 import "serving.proto";
 import "status.proto";
+import "list_documents.proto";
 import "google/api/annotations.proto";
 
 option java_package = "com.vectara";
@@ -108,6 +111,22 @@ service AdminService {
     };
   }
 
+  rpc ListUsers(com.vectara.admin.ListUsersRequest)
+          returns (com.vectara.admin.ListUsersResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-users"
+      body: "*"
+    };
+  }
+
+  rpc ManageUser(com.vectara.admin.ManageUserRequest)
+          returns (com.vectara.admin.ManageUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/manage-user"
+      body: "*"
+    };
+  }
+
   rpc ReplaceCorpusFilterAttrs(com.vectara.admin.ReplaceCorpusFilterAttrsRequest) returns (com.vectara.admin.ReplaceCorpusFilterAttrsResponse) {
     option (google.api.http) = {
       post: "/v1/replace-corpus-filter-attrs"
@@ -144,3 +163,4 @@ service AdminService {
   }
 
 }
+
