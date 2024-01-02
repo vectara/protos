@@ -13,12 +13,10 @@ package com.vectara.admin;
 // Represents a user in an account.
 // A user is a person or an application that has access to the system.
 message User {
-  // Unique id for the user. This is required for deleting, enabling, disabling a user
+  // Unique ID for the user. This is required for deleting, enabling, disabling a user
   // or to reset their password. This can be retrieved via ListUsers API or it is also
   // returned as part of ManageUser API when a new user is created.
   uint32 id = 1;
-  // Unique GUID based identifier for the user.
-  string sub = 2;
   // Name of the user. This is required for creating a new user.
   string handle = 3;
   // Type of user
@@ -27,7 +25,7 @@ message User {
   string comment = 5;
   // Seconds since epoch when the user was created.
   int64 ts_create = 6;
-  // Id of the user who created this user.
+  // ID of the user who created this user.
   uint32 id_create = 7;
   // Email address associated with the user. This is required for creating a new user.
   string email = 10;
@@ -56,6 +54,36 @@ enum UserStatus {
   USER_STATUS__DISABLED = 2;
 }
 
+enum ListUsersType {
+  LIST_USERS_TYPE__NONE = 0;
+  // Only List users with customer account-level authorizations.
+  LIST_USERS_TYPE__CUSTOMER = 2;
+  // List All the users
+  LIST_USERS_TYPE__ALL = 3;
+}
+
+message ListUsersRequest {
+  // Type of users that we want to retrieve
+  ListUsersType list_users_type = 3;
+  // A key that is passed to retrieve a specific page of results.
+  // Leave empty to retrieve first page. Subsequent page requests should
+  // use the page key returned in previous response, and all other
+  // fields are ignored.
+  bytes page_key = 4;
+  // Number of results to return.
+  uint32 num_results = 5;
+}
+
+message ListUsersResponse {
+  // List of users
+  repeated User user = 1;
+  // A key that is passed into a subsequent result in order to
+  // retrieve the next page of results.
+  bytes page_key = 2;
+  // Status response of the request such as OK, FAILED etc.
+  Status status = 1000;
+}
+
 enum UserActionType {
   USER_ACTION_TYPE__NONE = 0;
   // Add User
@@ -68,8 +96,6 @@ enum UserActionType {
   USER_ACTION_TYPE__ENABLE = 4;
   // Reset User Password
   USER_ACTION_TYPE__RESET_PASSWORD = 5;
-  // Edit User Roles
-  USER_ACTION_TYPE__EDIT_ROLE = 6;
 }
 
 message ManageUserRequest {
