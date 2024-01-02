@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "status.proto";
+
+option go_package = "vectara.com/public/proto/admin";
+
+option java_package = "com.vectara.admin";
+option java_outer_classname = "AdminAccountProtos";
+
+package com.vectara.admin;
+
+// Please note that this is an expensive operation, and the requests can be throttled
+// by the platform.
+message ComputeAccountSizeRequest {
+}
+
+// A TextSize object represents the size of stored text.
+message TextSize {
+  // Count of actual characters in the text that will be searched.
+  uint64 num_chars = 1;
+  // Count of metadata characters such as URL, author, date of creation etc.
+  uint64 num_metadata_chars = 2;
+}
+
+message ComputeAccountSizeResponse {
+  // One TextSize represents one cluster. The account size is a sum of all the sizes.
+  // Generally, this will only have one value.
+  repeated TextSize size = 1;
+  // Status response of the operation.
+  Status status = 2;
+}
+
+

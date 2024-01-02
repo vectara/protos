@@ -188,6 +188,84 @@ message ListCorporaResponse {
   Status status = 1000;
 }
 
+message UpdateCorpusEnablementRequest {
+  // The corpus to enable or disable.
+  uint32 corpus_id = 1;
+  // If true, enable the corpus. Otherwise, disable it.
+  bool enable = 2;
+}
+
+message UpdateCorpusEnablementResponse {
+  Status status = 1;
+}
+
+message CorpusSize {
+  // The time at which the size was calculated.
+  int64 epoch_secs = 1;
+
+  // The size of the corpus.
+  uint64 size = 2;
+}
+
+message ReadCorpusRequest {
+  // Corpora IDs to read.
+  repeated uint32 corpus_id = 1;
+
+  // Subset of information to read.
+  // Set to true to read basic information about the corpus such as id, name,
+  // description, enabled, etc.
+  bool read_basic_info = 1000;
+  // Set to true to read the size of the corpus.
+  bool read_size = 1001;
+  // Set to true to read the API keys associated with the corpus.
+  bool read_api_keys = 1003;
+  // Set to true to read the custom dimensions of the corpus.
+  bool read_custom_dimensions = 1004;
+  // Set to true to read the filter attributes of the corpus.
+  bool read_filter_attributes = 1005;
+}
+
+message ReadCorpusResponse {
+  // A Corpus information object containing the requested information.
+  message CorpusInfo {
+    // Only requested fields are populated.
+    Corpus corpus = 1;
+    // Status of the corpus.
+    Status corpus_status = 1001;
+    // Size of the corpus. Only populated if read_size is true.
+    CorpusSize size = 2;
+    // Status of the size.
+    Status size_status = 1002;
+    // API keys associated with the corpus. Only populated if read_api_keys is true.
+    repeated ApiKey api_key = 4;
+    // Status of the API keys.
+    Status api_key_status = 1004;
+    // Custom dimensions of the corpus. Only populated if read_custom_dimensions is true.
+    repeated Dimension custom_dimension = 5;
+    // Status of the custom dimensions.
+    Status custom_dimension_status = 1005;
+    // Filter attributes of the corpus. Only populated if read_filter_attributes is true.
+    repeated FilterAttribute filter_attribute = 6;
+    // Status of the filter attributes.
+    Status filter_attribute_status = 1006;
+  }
+
+  // Information about the requested corpora.
+  repeated CorpusInfo corpora = 1;
+}
+
+message ComputeCorpusSizeRequest {
+  // The corpus for which to compute the size.
+  uint32 corpus_id = 1;
+}
+
+message ComputeCorpusSizeResponse {
+  // The size of the corpus.
+  CorpusSize size = 1;
+  // The status of the size computation.
+  Status status = 2;
+}
+
 message ReplaceCorpusFilterAttrsRequest {
   // The corpus for which to update filters.
   uint32 corpus_id = 1;
