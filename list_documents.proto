@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+import "attribute.proto";
+
+option java_package = "com.vectara.lists";
+option java_outer_classname = "ListProtos";
+
+option go_package = "vectara.com/public/proto/lists";
+
+package com.vectara.lists;
+
+// Request to list documents in a corpus.
+message ListDocumentsRequest {
+  // The Corpus ID.
+  uint32 corpus_id = 5;
+
+  // Maximum number of results to be returned by the server.
+  // Max is 1000.
+  // If the value is larger than 1000, it will be capped to 1000.
+  uint32 num_results = 10;
+  // Key of the specific page of the list results to return.
+  // Null/empty value means the very first page of the results is requested.
+  bytes page_key = 15;
+
+  // Filter on document metadata. If empty, no filtering is done.
+  // Otherwise, only documents that match all of the specified metadata
+  // will be returned. The syntax is the same as for QueryRequest.metadata.
+  string metadata_filter = 20;
+}
+
+// Response of listing documents in a corpus.
+message ListDocumentsResponse {
+  // Document information format of each document in the list.
+  message DocumentInfo {
+    // The document ID that was used when indexing the document.
+    string id = 1;
+    // Document metadata.
+    repeated Attribute metadata = 5;
+  }
+
+  // The list of documents.
+  repeated DocumentInfo document = 1;
+  // Represents the pagination key to retrieve the next page of results.
+  // If the value is "", it means no further results for the request.
+  // To retrieve the next page of results, client shall pass the value of next_page_key in the subsequent
+  // ListDocumentsRequest method call (in the request message's page_key field).
+  bytes next_page_key = 5;
+}
+
