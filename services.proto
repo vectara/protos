@@ -196,3 +196,13 @@ service AdminService {
 
 }
 
+// Service for working with documents.
+service DocumentService {
+  // Returns a list of documents for customer/corpus with pagination and optional document metadata filtering.
+  rpc ListDocuments(com.vectara.lists.ListDocumentsRequest) returns (com.vectara.lists.ListDocumentsResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-documents"
+      body: "*"
+    };
+  }
+}
