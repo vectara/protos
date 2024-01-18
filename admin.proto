@@ -3,6 +3,7 @@ syntax = "proto3";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 import "admin_apikey.proto";
+import "admin_metric.proto";
 import "status.proto";
 
 option go_package = "vectara.com/public/proto/admin";
