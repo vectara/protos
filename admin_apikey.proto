@@ -19,6 +19,8 @@ enum ApiKeyType {
   API_KEY_TYPE__SERVING = 1;
   // ApiKey for serving and indexing. Gives access to both query and index data.
   API_KEY_TYPE__SERVING_INDEXING = 2;
+  // ApiKey for personal access key.
+  API_KEY_TYPE__PERSONAL = 3;
 }
 
 // Status of ApiKey.
@@ -84,6 +86,9 @@ message ListApiKeysRequest {
   // use the page key returned in previous response, and all other
   // fields are ignored.
   bytes page_key = 2;
+  // [Optional] Get API keys of these types.
+  // Default: If not set, API_KEY_TYPE__SERVING and API_KEY_TYPE__SERVING_INDEXING are returned.
+  repeated ApiKeyType api_key_type = 3;
   // If set, returns corpus name & id associated with api keys.
   bool read_corpora_info = 1000;
 }
