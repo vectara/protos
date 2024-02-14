@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+import "status.proto";
+
+option java_package = "com.vectara.chat";
+option java_outer_classname = "ChatProtos";
+
+option go_package = "vectara.com/public/proto/chat";
+
+package com.vectara.chat;
+
+// A turn in a conversation is a single exchange of query and answer.
+// A conversation is composed of several turns.
+message Turn {
+  // The ID of the turn. The ID of the first turn in a conversation is the same as the
+  // ID of the conversation. This is unique within the chat history corpus.
+  string id = 1;
+  // The ID of the conversation this turn belongs to. This is the same as the ID of the
+  // first turn in the conversation.
+  string conversation_id = 5;
+  // The query text.
+  string query = 10;
+  // The answer text.
+  string answer = 15;
+  // Whether this turn is enabled. If a turn is disabled, it will not be used when
+  // generating answers for subsequent queries in the conversation.
+  bool enabled = 20;
+  // The time at which this turn was created.
+  int64 epoch_secs = 25;
+}
+
+// A chat contains several back-and-forth messages called turns.
+message Conversation {
+  // The ID of the conversation. This is unique within the chat history corpus.
+  string id = 1;
+  // The turns comprising this conversation.
+  repeated Turn turn = 5;
+}
+
+message ListConversationsRequest {
+
+  // Maximum number of conversations to return per page.
+  uint32 num_results = 5;
+
+  // A key that is passed in to retrieve a specific page of results.
+  // Leave empty to retrieve the first page. Subsequent page request should
+  // use the page key returned in previous response, and all other
+  // fields are ignored.
+  bytes page_key = 10;
+}
+
+message ListConversationsResponse {
+  // The first turn in each conversation.
+  // This doesn't comprise all turns in each conversation; only the first turn of each
+  // conversation is returned.
+  repeated Turn conversation = 1;
+  Status status = 5;
+
+  // A key that is passed in to retrieve a specific page of results.
+  // Pass this as is in to the next request to retrieve the next page of results.
+  bytes page_key = 10;
+}
+
+message ReadConversationsRequest {
+  // The IDs of the conversations to read. Limit: 10 conversations.
+  repeated string conversation_id = 5;
+}
+
+message ReadConversationsResponse {
+  repeated Conversation Conversation = 1;
+  Status status = 5;
+}
+
+message DeleteConversationsRequest {
+  // The IDs of the conversations to delete. Limit: 1000 conversations.
+  repeated string conversation_id = 5;
+}
+
+message DeleteConversationsResponse {
+  Status status = 1;
+}
+
+message DeleteTurnsRequest {
+  // The ID of the conversations from which to delete turns.
+  string conversation_id = 5;
+  // The ID of the turn to start deletion from. All turns in this conversation starting from this
+  // turn (inclusive) will be deleted.
+  string turn_id = 10;
+}
+
+message DeleteTurnsResponse {
+  Status status = 1;
+}
+
+message DisableTurnsRequest {
+  // The ID of the conversations from which to disable turns.
+  string conversation_id = 5;
+  // The ID of the turn to start disabling from. All turns in this conversation starting from this
+  // turn will be disabled.
+  string turn_id = 10;
+}
+
+message DisableTurnsResponse {
+  Status status = 1;
+}
+
