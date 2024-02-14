@@ -61,6 +61,10 @@ message SummarizationRequest {
   // the auto-detected language of the incoming query should be used.
   string response_lang = 20;
 
+
+  // If present, the query will be treated as a chat query.
+  // When using chat, only one summarization request is allowed per query.
+  ChatRequest chat = 225;
 }
 
 
@@ -150,6 +154,27 @@ message QueryRequest {
 }
 
 
+// The chat request.
+message ChatRequest {
+  // Whether to store the query/answer pair.
+  bool store = 5;
+
+  // The conversation id of the chat.
+  // If empty, a new conversation will be started.
+  string conversation_id = 15;
+}
+
+message Chat {
+  // The conversation id of the chat.
+  string conversation_id = 5;
+  // The id assigned to this query and answer.
+  string turn_id = 10;
+
+
+  // Any errors when processing the chat request.
+  Status status = 1000;
+}
+
 message Attribute {
   string name = 5;
   string value = 10;
@@ -163,6 +188,9 @@ message Summary {
   // summary language is the same as the auto-detected language of the query.
   string lang = 15;
 
+
+  // Populated if chat was requested in the SummaryRequest.
+  Chat chat = 205;
 
   // Statuses are marked “repeated” for consistency and flexibility. A failed
   // summary should bubble up into the status code of the entire ResponseSet.

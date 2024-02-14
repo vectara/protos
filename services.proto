@@ -8,6 +8,7 @@ import "admin_metric.proto";
 import "admin_security.proto";
 import "admin_user.proto";
 
+import "chat.proto";
 import "common.proto";
 import "indexing.proto";
 import "serving.proto";
@@ -217,3 +218,51 @@ service DocumentService {
   }
 }
 
+// Service for working with chat conversations.
+service ChatService {
+
+  // List all conversations.
+  rpc ListConversations(com.vectara.chat.ListConversationsRequest)
+      returns (com.vectara.chat.ListConversationsResponse) {
+    option (google.api.http) = {
+      post: "/v1/list-conversations"
+      body: "*"
+    };
+  }
+
+  // Read all turns within the passed conversations.
+  rpc ReadConversations(com.vectara.chat.ReadConversationsRequest)
+      returns (com.vectara.chat.ReadConversationsResponse) {
+    option (google.api.http) = {
+      post: "/v1/read-conversations"
+      body: "*"
+    };
+  }
+
+  // Delete conversations (including all turns in it).
+  rpc DeleteConversations(com.vectara.chat.DeleteConversationsRequest)
+      returns (com.vectara.chat.DeleteConversationsResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-conversations"
+      body: "*"
+    };
+  }
+
+  // Delete turns.
+  rpc DeleteTurns(com.vectara.chat.DeleteTurnsRequest)
+      returns (com.vectara.chat.DeleteTurnsResponse) {
+    option (google.api.http) = {
+      post: "/v1/delete-turns"
+      body: "*"
+    };
+  }
+
+  // Disable turn. The turn will no longer be used in conversations.
+  rpc DisableTurns(com.vectara.chat.DisableTurnsRequest)
+      returns (com.vectara.chat.DisableTurnsResponse) {
+    option (google.api.http) = {
+      post: "/v1/disable-turns"
+      body: "*"
+    };
+  }
+}
