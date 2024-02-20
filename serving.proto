@@ -61,7 +61,6 @@ message SummarizationRequest {
   // the auto-detected language of the incoming query should be used.
   string response_lang = 20;
 
-
   // Vectara manages both system and user roles and prompts for the generative
   // LLM out of the box by default.  However, Scale customers can override the
   // prompt_text via this variable.  The prompt_text is in the form of an
@@ -69,7 +68,6 @@ message SummarizationRequest {
   // prompt_text, see the long-form documentation at
   // https://docs.vectara.com/docs/prompts/vectara-prompt-engine
   string prompt_text = 200;
-
 
   // If present, the query will be treated as a chat query.
   // When using chat, only one summarization request is allowed per query.
