@@ -24,7 +24,7 @@ message IndexCoreDocumentRequest {
 }
 
 message IndexCoreDocumentResponse {
-  // If ALREADY_EXISTS, it means the document was already indexed, and no new quota was consumed.
+  // Refer to IndexDocumentResponse in services.proto for the indexing error responses.
   Status status = 1;
 
   // The storage quota needed for the document indexed in the request.

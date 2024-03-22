@@ -16,51 +16,94 @@ message Status {
 }
 
 enum StatusCode {               // Reasons for an error
+  // OK (0): The request completed successfully.
   OK = 0;
+  // FAILURE (1): A non-user error occurred. This is similar to INTERNAL, UNKNOWN, and 
+  // INTERNAL_SERVER_ERROR error codes. Try your request again with backoff. 
+  // See https://status.vectara.com for the latest info on any outages.
+  // If the problem persists, please contact us via support or via our community forums 
+  // at https://discuss.vectara.com if you’re a Growth user.
   FAILURE = 1;
 
   // gRPC Codes ----------------------------------------------------------------
 
+  
+  // UNKNOWN (2): An internal server exception occurred. This is similar to INTERNAL, 
+  // FAILURE, and INTERNAL_SERVER_ERROR error codes. Try your request again 
+  // with backoff. See https://status.vectara.com for the latest info on any outages.
+  // If the problem persists, please contact us via support or via our community forums 
+  // at https://discuss.vectara.com if you’re a Growth user.
   UNKNOWN             = 2;
+  // INVALID_ARGUMENT (3): The request contains an invalid argument. Verify the argument values and try again.
   INVALID_ARGUMENT    = 3;
+  // DEADLINE_EXCEEDED (4): The request took too long to complete. Retry with a larger timeout value.
   DEADLINE_EXCEEDED   = 4;
   ALREADY_EXISTS      = 6;
+  // PERMISSION_DENIED (7): The caller does not have permission to perform this operation. Verify that your credentials have the appropriate access.
   PERMISSION_DENIED   = 7;
+  // RESOURCE_EXHAUSTED (8): The request cannot complete because the system is out of resources. This error may be due to too many simultaneous requests or you exceeded your quota.
   RESOURCE_EXHAUSTED  = 8;
+  // FAILED_PRECONDITION (9): The request failed because your system does not meet the correct preconditions. 
   FAILED_PRECONDITION = 9;
+  // ABORTED (10): The indexing request was aborted because of a system error. Try again later.
   ABORTED             = 10;
   OUT_OF_RANGE        = 11;
+  // UNIMPLEMENTED (12): The request contains an unsupported operation. Verify the values and try again.
   UNIMPLEMENTED       = 12;
+  // INTERNAL (13): A non-user error occurred. This is similar to FAILURE, UNKNOWN, and 
+  // INTERNAL_SERVER_ERROR error codes. Try your request again with backoff. 
+  // See https://status.vectara.com for the latest info on any outages.
+  // If the problem persists, please contact us via support or via our community forums 
+  // at https://discuss.vectara.com if you’re a Growth user.
   INTERNAL            = 13;
+  // UNAVAILABLE (14): The service you requested is currently unavailable. Check our status page at status.vectara.com for more information.
   UNAVAILABLE         = 14;
   DATA_LOSS           = 15;
+  // UNAUTHENTICATED (16): The indexing request does not have valid authentication credentials. Verify that you have attached authentication credentials with the request.
   UNAUTHENTICATED     = 16;
 
   // HTTP Codes ----------------------------------------------------------------
 
+  // BAD_REQUEST (400): You tried a bad request. Verify the values and try again.
   BAD_REQUEST           = 400;
+  // UNAUTHORIZED (401): The request is not authorized. Verify that your credentials have the appropriate access.
   UNAUTHORIZED          = 401;
+  // FORBIDDEN (403): You do not have the appropriate access rights for this request.
   FORBIDDEN             = 403;
+  // NOT_FOUND (404): An object you specified for the request does not exist. Verify the values and try again.
   NOT_FOUND             = 404;
+  // METHOD_NOT_ALLOWED (405): Invalid method invoked, please check your request.
   METHOD_NOT_ALLOWED    = 405;
   CONFLICT              = 409;
   UNSUPPORTED_MEDIA_TYPE = 415;
+  // TOO_MANY_REQUESTS (429): The server is overloaded, or you sent too many requests 
+  // to the server in a short amount of time. This is similar to RESOURCE_EXHAUSTED.
   TOO_MANY_REQUESTS     = 429;
+  // INTERNAL_SERVER_ERROR (500): The request failed because of critical system error. Check our status page at status.vectara.com.
   INTERNAL_SERVER_ERROR = 500;
+  // NOT_IMPLEMENTED (501): The server either does not recognize the request method, or it lacks the ability to fulfil the request.
   NOT_IMPLEMENTED       = 501;
+  // SERVICE_UNAVAILABLE (503): The server is not available. Check the status page at status.vectara.com for more information.
   SERVICE_UNAVAILABLE   = 503;
+  // INSUFFICIENT_STORAGE (507): Your account does not have enough storage to complete the indexing request. Contact support or upgrade your plan.
   INSUFFICIENT_STORAGE  = 507;
-
   UNPARSEABLE_RESPONSE = 1000;
 
   // General Failures-----------------------------------------------------------
 
+  // DISABLED_CUSTOMER (1100): The Customer ID is currently disabled.
   DISABLED_CUSTOMER         = 1100;
+  // INVALID_CUSTOMER_ID (1101): The Customer ID is invalid or does not exist.
   INVALID_CUSTOMER_ID       = 1101;
+  // DISABLED_CORPUS (1102): The request specified a disabled Corpus ID. Verify the status of your corpus and try again.
   DISABLED_CORPUS           = 1102;
+  // INVALID_CORPUS_ID (1103): The request specified an invalid Corpus ID. Verify the Corpus ID and try again.
   INVALID_CORPUS_ID         = 1103;
+  // DISABLED_API_KEY (1104): The request specified a disabled API key. Verify the API key or contact your administrator.
   DISABLED_API_KEY          = 1104;
+  // EXPIRED_API_KEY (1105): The request specified an expired API key. Contact your administrator.
   EXPIRED_API_KEY           = 1105;
+  // INVALID_API_KEY (1106): The request specified an invalid API key. Verify the API key and try 
   INVALID_API_KEY           = 1106;
   // The customer managed key is inaccessible. This can be for various reasons, e.g.,
   // the key does not exist, or the platform does not have permissions to use it.
@@ -68,26 +111,80 @@ enum StatusCode {               // Reasons for an error
 
   // Serving Query -------------------------------------------------------------
 
+  // One or more corpora you tried to query are in a disabled status. 
+  // Contact your administrator to enable the corpus.
   QRY__DISABLED_CORPUS      = 1500;
+  // A failure occured in reading the query result text or metadata which indicates a
+  // significant system issue. Paid customers should contact support for
+  // assistance. For other users, we recommend visiting our forums or Discord
+  // channel for guidance and community support.
   QRY__DOCUMENT_DB_FAILURE  = 1505;
+  // A failure occured while encoding the query because the encoder was either unavailable
+  // or unreachable. Visit our system outages page at https://status.vectara.com to
+  // see if there are any global outages. If there is no outage, paid customers
+  // should contact support.
   QRY__ENCODER_FAILURE      = 1510;
+  // The query execution was unexpectedly interupted on our server and you might only
+  // have partial results. Try again and if the problem persists, paid customers should
+  // contact support. For other users, we recommend visiting our forums or Discord
+  // channel for guidance and community support.
   QRY__INTERRUPTED          = 1515;
+  // You specified a corpus ID that does not exist. Go back and verify that this
+  // corpus exists. Visit the following link in the Console UI, substituting the ID
+  // with your corpus value https://console.vectara.com/console/corpus/ID/overview
   QRY__INVALID_CORPUS       = 1520;
+  // The start position value must be 0 or higher. If you used a value less than 0,
+  // this error appears.
   QRY__INVALID_START        = 1525;
+  // The num_results value must be a postiive integer and not less than or equal to 0.
+  // If you still get this error, you need an upper limit set at the account level.
+  // Contact support.
   QRY__INVALID_NUM_RESULTS  = 1530;
   QRY__INVALID_CONTEXT      = 1531;
   QRY__MISSING_QUERY        = 1535;
+  // You did not specify a corpus ID in the query. Try again and make sure that you
+  // specify a valid corpus ID.
   QRY__MISSING_CORPUS       = 1540;
+  // The request has timed out and the system has not finished processing. Try again
+  // with a longer timeout value in seconds or minutes that you can specify in the 
+  // optional timeout header. Example values include 30S or 1M.
   QRY__TIMEOUT              = 1545;
+  // Your query specifies too many corpora. This limit is set at the account level.
   QRY__TOO_MANY_CORPORA     = 1550;
+  // You specified too many queries in the request. The limit is set at the account
+  // level. Try again with fewer queries.
   QRY__TOO_MANY_QUERIES     = 1555;
+  // An unexpected error or failure occured in the vector database. Visit our system
+  // outages page at https://status.vectara.com to see if there are any global 
+  // outages. If there is no outage, paid customers should contact support. For other
+  // users, we recommend visiting our forums or Discord channel for guidance.
   QRY__VECTOR_INDEX_FAILURE = 1560;
+  // You specified an invalid custom dimension name in the query. Go to the corpus
+  // overview page and make sure you have the correct custom dimension name,
+  // substituting the ID for your value
+  // https://console.vectara.com/console/corpus/ID/overview
   QRY__INVALID_DIMENSION    = 1565;
   QRY__INVALID_CLIENTKEY    = 1570;
+  // A failure occured and your text or metadata cannot be decrypted. Visit our system
+  // outages page at https://status.vectara.com to see if there are any global outages.
+  // If there is no outage, paid customers should contact support. For other users,
+  // we recommend visiting our forums or Discord channel for guidance and community support.
   QRY__DECRYPTION_FAILURE   = 1575;
+  // You specified a reranker ID that does not exist. If you specified the correct ID,
+  // paid customers should contact support. For other users, we recommend visiting
+  // our forums or Discord channel for guidance and community support.
   QRY__INVALID_RERANKER     = 1580;
+  // The reranking limit was exceeded and only part of the results were reranked.
+  // For efficient processing, rerankers apply a maximum limit per request, such 
+  // as 200 for MMR. Paid customers should contact support. For other users, we
+  // recommend visiting our forums or Discord channel.
   QRY__PARTIAL_RERANK       = 1585;
+  // The reranker failed to rerank the results. Paid customers should contact 
+  // support. For other users, we recommend visiting our forums or Discord channel.
   QRY__RERANK_FAILURE       = 1590;
+  // The requested start position or number of results exceeds the set limit. Reduce
+  // the start position or the number of requested results. Limits vary per customer,
+  // so we recommend contacting support.
   QRY__TOO_MANY_RESULT_ROWS = 1595;
   QRY__PARTIAL_RETRIEVAL    = 1600;
 
@@ -103,6 +200,10 @@ enum StatusCode {               // Reasons for an error
   QRY__SMRY__PARTIAL_SUMMARY           = 1675;
   // There were no query results to generate the summary.
   QRY__SMRY__NO_QUERY_RESULTS          = 1680;
+  // The summary is in a language that the Evaluation Model doesn't support.
+  QRY__SMRY__EVAL_UNSUPPORTED_LANG     = 1685;
+  // The Evaluation Model failed to evaluate the summary for factual consistency.
+  QRY__SMRY__EVAL_FAILURE              = 1690;
 
   // Generative failures while serving queries.
   QRY__GEN__NO_QUERY_RESULTS = 1650 [deprecated = true];
