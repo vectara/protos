@@ -34,7 +34,22 @@ message IndexDocumentRequest {
 }
 
 message IndexDocumentResponse {
-  // If ALREADY_EXISTS, it means the document was already indexed, and no new quota was consumed.
+  // ALREADY_EXISTS (6) The document has already been indexed, and no new quota was consumed.
+  // RESOURCE_EXHAUSTED (8): The indexing request cannot complete because the system is out of resources. This error may be due to too many simultaneous requests or you exceeded your quota.
+  // CONFLICT (409): The Document ID already exists. Indexing doesn't support updating documents. 
+  // The new request does not match the previous request for the Document ID. If you would like 
+  // to update the document, delete it first, and then add it to the index again.
+  // TOO_MANY_REQUESTS (429): The server is overloaded, or you sent too many indexing requests 
+  // to the server in a short amount of time. This is similar to RESOURCE_EXHAUSTED.
+  // IDX__TRANSIENT_PARTIAL_DELETION_FAILURE (5000): The indexing request resulted in a transient error during the partial deletion of documents. Try the request again.
+  // IDX__PERMANENT_PARTIAL_DELETION_FAILURE (5001): The indexing request resulted in a 
+  // permanent error during the partial deletion of documents. See https://status.vectara.com 
+  // for the latest info on any outages. If the problem persists, please contact us via support 
+  // or via our community forums at https://discuss.vectara.com if you’re a Growth user. 
+  // during the partial deletion of documents.
+  //
+  // Some common relevant error codes may also be returned for corresponding errors, 
+  // for example, PERMISSION_DENIED, DISABLED_CUSTOMER, NOT_FOUND.
   Status status = 1;
 
   // The storage quota needed for the document indexed in the request.
