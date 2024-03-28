@@ -23,6 +23,10 @@ message Corpus {
   uint32 id = 1;
   // The name of the corpus.
   string name = 2;
+  // Key to refer to the corpus in HTTP V2 APIs. Limited to characterss that match [a-zA-Z0-9_-]+,
+  // and may only be 50 characters in length.
+  // Defaults to the name (minus url unsafe characters) plus the corpus id if not set.
+  optional string key = 15;
   // A description for the corpus.
   string description = 3;
   // The time at which the corpus was provisioned.
@@ -117,6 +121,7 @@ message CreateCorpusRequest {
 message CreateCorpusResponse {
   // The Corpus ID that was created.
   uint32 corpus_id = 1;
+  string corpus_key = 3;
   Status status = 2;
 }
 
