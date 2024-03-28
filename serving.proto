@@ -120,7 +120,7 @@ message SummarizationRequest {
   // When using chat, only one summarization request is allowed per query.
   ChatRequest chat = 225;
 
-  // If true, the response will include the factual consistency score.
+  // If unset or true, the response will include the factual consistency score.
   optional bool factual_consistency_score = 230;
 }
 
@@ -265,6 +265,10 @@ message Summary {
   // Populated if factual_consistency_score was requested in the SummaryRequest.
   FactualConsistency factual_consistency = 210;
 
+  // Determines if the summary is done.
+  // `false` if the summary is in-progress for streaming requests, otherwise `true`.
+  // this only refers to summary text generation, Factual Consistency will come later if requested.
+  bool done = 215;
 
   // Statuses are marked “repeated” for consistency and flexibility. A failed
   // summary should bubble up into the status code of the entire ResponseSet.
