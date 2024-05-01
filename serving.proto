@@ -1,0 +1,400 @@
+syntax = "proto3";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "status.proto";
+
+option java_package = "com.vectara.serving";
+option java_outer_classname = "ServingProtos";
+
+option go_package = "vectara.com/public/proto/serving";
+
+package com.vectara.serving;
+
+// Defined the weight of a custom dimension at query time.
+message CustomDimension {
+  // The name of the custom dimension.
+  string name = 1;
+  // The weight of the custom dimension on the query side. This gets multipled
+  // by the matching index custom dimension weight and added to the score.
+  double weight = 2;
+}
+
+// Configuration for a linear interpolation.
+message LinearInterpolation {
+  // Controls the weight given to lexical matches. The final score, S, is then:
+  //     S = (lambda) * (lexical score) + (1 - lambda) * (dense score)
+  float lambda = 1 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "0.025"
+      }];
+  }
+
+// Object to specify how each corpus in a query is searched.
+message CorpusKey {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [ "corpus_id" ]
+    }
+    example: "{ \"corpus_id\": 12 }"
+  };
+  // The Customer ID.
+  uint32 customer_id = 5;
+  // The Corpus ID.
+  uint32 corpus_id = 10;
+
+  // Semantics controls the interpretation of the query string by the
+  // server, and can be used to override the default semantics assigned
+  // in the corpus definition.
+  enum Semantics {
+    // Use corpus-assigned semantics.  This is the most common setting.
+    DEFAULT = 0;
+    // Use query semantics.  This is also common.
+    QUERY = 1;
+    // Use response semantics.  Usage of this is rare.
+    RESPONSE = 2;
+  }
+  Semantics semantics = 15;
+
+  // Weights on custom dimensions for the corpus.
+  repeated CustomDimension dim = 20;
+
+  // Filter the documents and document parts based on their metadata.
+  // See https://docs.vectara.com/docs/learn/metadata-search-filtering/filter-overview
+  // for a detailed explanation on how to create a metadata filter.
+  string metadata_filter = 25;
+
+  // Object determining how the final search result scores
+  // are influenced by the lexical score.
+  LinearInterpolation lexical_interpolation_config = 30;
+}
+
+
+// How a LLM uses the search results to provide a response to a query.
+message SummarizationRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [ "max_summarized_results", "response_lang" ]
+    }
+    example: "{ \"max_summarized_results\": 10, \"response_lang\": \"en\" }"
+  };
+  // The name of the summarizer+prompt combination to use for summarization.
+  string summarizer_prompt_name = 3;
+  // Maximum number of results to summarize.
+  uint32 max_summarized_results = 15;
+  // ISO 639-1 or ISO 639-3 language code for the response, or "auto" to indicate that
+  // the auto-detected language of the incoming query should be used.
+  string response_lang = 20;
+
+
+  // Vectara manages both system and user roles and prompts for the generative
+  // LLM out of the box by default.  However, Scale customers can override the
+  // prompt_text via this variable.  The prompt_text is in the form of an
+  // Apache Velocity template.  For more details on how to configure the
+  // prompt_text, see the long-form documentation at
+  // https://docs.vectara.com/docs/prompts/vectara-prompt-engine
+  // See https://vectara.com/pricing/ for more details on becoming a Scale customer.
+  string prompt_text = 200;
+
+  // Debugging the generative prompt is currently a Scale-only feature.
+  // See https://vectara.com/pricing/ for more details on becoming a Scale customer.
+  bool debug = 205;
+
+  // Controls the length of the summary.
+  // This is a rough estimate and not a hard limit: the end summary can be longer or shorter
+  // than this value.  This is currently a Scale-only feature.
+  // See https://vectara.com/pricing/ for more details on becoming a Scale customer.
+  uint32 response_chars = 210;
+
+  // Parameters for the summarizer model.  These are currently a Scale-only feature.
+  // See https://vectara.com/pricing/ for more details on becoming a Scale customer.
+  // WARNING: This is an experimental feature, and breakable at any point with virtually no
+  // notice. It is meant for experimentation to converge on optimal parameters that can then
+  // be set in the prompt definitions.
+  message ModelParams {
+    optional uint32 max_tokens = 5;
+    // The sampling temperature to use. Higher values make the summary more random, while lower
+    // values make it more focused and deterministic.
+    optional float temperature = 10;
+    // Higher values penalize new tokens based on their existing frequency in the text so far,
+    // decreasing the model's likelihood to repeat the same line verbatim.
+    optional float frequency_penalty = 15;
+    // Higher values penalize new tokens based on whether they appear in the text so far,
+    // increasing the model's likelihood to talk about new topics.
+    optional float presence_penalty = 20;
+  }
+  ModelParams model_params = 215;
+
+
+  // If present, the query will be treated as a chat query.
+  // When using chat, only one summarization request is allowed per query.
+  ChatRequest chat = 225;
+
+  // If unset or true, the response will include the factual consistency score.
+  optional bool factual_consistency_score = 230;
+}
+
+
+message QueryRequest {
+  // The query text to use from the end user.
+  string query = 5;
+
+
+  // The start position in the result set
+  uint32 start = 15;
+  // The number of results to return.
+  uint32 num_results = 20;
+  // Allows processing a matched document part text before being returned
+  // as a search result. Allows a search result to have more of the document
+  // than just the matched document part.
+  message ContextConfig {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: { 
+        required: [ "sentences_before", "sentences_after", "start_tag", "end_tag" ] 
+      }
+      example: "{ \"sentences_before\": 3, \"sentences_after\": 3, \"start_tag\": \"<b>\", \"end_tag\": \"</b>\" }"
+    };
+    // chars_before is used for showing the end user the characters leading up
+    // to the result snippet.  This can help the end-user understand the
+    // context of that result. Ignored if sentences_before is set.
+    int32 chars_before = 5 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "30"
+      }];
+
+    // chars_after is used for showing the end user the characters after the
+    // result snippet.  This can help the end-user understand the context of
+    // that result. Ignored if sentences_before is set.
+    int32 chars_after = 10 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "30"
+      }];
+
+    // sentences_before is used for showing the end user the sentences leading
+    // up to the result snippet.  This can help the end-user understand the
+    // context of that result.
+    int32 sentences_before = 15 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "3"
+      }];
+
+    // sentences_after is used for showing the end user the sentences leading
+    // up to the result snippet.  This can help the end-user understand the
+    // context of that result.
+    int32 sentences_after = 20 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "3"
+      }];
+
+    // The tag that wraps the snippet at the start. Often this is used to
+    // provide a start HTML/XML tag or some other delimiter you can use in an
+    // application to understand where to provide highlighting in your UI and
+    // understand where the context before ends and the snippet begins.
+    string start_tag = 25 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"<b>\""
+      }];
+
+    // The tag that wraps the snippet at the end. Often this is used to provide
+    // a start HTML/XML tag or some other delimiter you can use in an
+    // application to understand where to provide highlighting in your UI and
+    // understand where the snippet ends and the context after begins.
+    string end_tag = 30 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"</b>\""
+      }];
+  }
+  ContextConfig context_config = 22;
+
+  // The query is run on all these corpora, and the results are
+  // merged together in the response, ranked by score.
+  repeated CorpusKey corpus_key = 25;
+
+  // Configuration options to apply to the reranking.
+  message RerankingConfig {
+    // Which reranking model to use if reranking.  Currently, the only IDs
+    // available are:
+    // - 272725717, HuggingFace Open Source x-attentional reranker
+    // - 272725718, Maximum Marginal Relevance Reranker
+    uint32 reranker_id = 5;
+
+    // Reranker-specific parameters.  The numbering starts from 100, and moves
+    // upwards in increments of 5.
+    optional MMRConfig mmr_config = 100;
+  }
+  RerankingConfig reranking_config = 30;
+
+  // Optionally, one or more requests to summarize the results.
+  repeated SummarizationRequest summary = 35;
+
+}
+
+
+// The chat request.
+message ChatRequest {
+  // Whether to store the query/answer pair.
+  bool store = 5;
+
+  // The conversation id of the chat.
+  // If empty, a new conversation will be started.
+  string conversation_id = 15;
+}
+
+// Values needed to refer to the chat later.
+message Chat {
+  // The conversation id of the chat.
+  string conversation_id = 5;
+  // The id assigned to this query and answer.
+  string turn_id = 10;
+
+
+  // Any errors when processing the chat request.
+  Status status = 1000;
+}
+
+message Attribute {
+  string name = 5;
+  string value = 10;
+}
+
+message FactualConsistency {
+  // The probability that the summary is factually consistent with the results in the ResponseSet.
+  float score = 5;
+  // The factual consistency status.
+  Status status = 1000;
+}
+
+message Summary {
+  // The summary text.
+  string text = 10;
+
+  // ISO 639 language code of the summary. If the requested language was set to "AUTO", the
+  // summary language is the same as the auto-detected language of the query.
+  string lang = 15;
+
+
+  // Populated if chat was requested in the SummaryRequest.
+  Chat chat = 205;
+  // Populated if factual_consistency_score was requested in the SummaryRequest.
+  FactualConsistency factual_consistency = 210;
+  // Determines if the summary is done.
+  // `false` if the summary is in-progress for streaming requests, otherwise `true`.
+  // this only refers to summary text generation, Factual Consistency will come later if requested.
+  bool done = 215;
+  // Statuses are marked “repeated” for consistency and flexibility. A failed
+  // summary should bubble up into the status code of the entire ResponseSet.
+  repeated Status status = 1000;
+  // Populated for streaming requests only.
+  int32 future_id = 1010;
+}
+
+// A document part that matched a query.
+message Response {
+  // The text of the document part after being modified by the context config.
+  string text = 5;
+  // The score used for ranking results.  The higher the score, the better the match.
+  float score = 10;
+  // Document part level metadata.
+  repeated Attribute metadata = 20;
+  // Use this ID to find the document in the ResponseSet.
+  uint32 document_index = 25;
+  // The original parameters for the search that resulted in this document part
+  // response.
+  CorpusKey corpus_key = 30;
+
+}
+
+message ResponseSet {
+  // Search results for the query.
+  repeated Response response = 5;
+  // Potentially multiple warnings.
+  repeated Status status = 10;
+
+  message Document {
+    // The document id.
+    string id = 5;
+    // Document level metadata.
+    repeated Attribute metadata = 10;
+  }
+  // Document level metadata for document parts that are in the response.
+  repeated Document document = 15;
+
+  // A summary. If using synchronous APIs for querying, the summary will be
+  // included directly in this response. However, if using the streaming APIs
+  // for query, the summary messages only set the future_id field. Later, as
+  // summary results are computed and returned over the stream, the future_id
+  // within the summary can be used for correlation.
+  repeated Summary summary = 25;
+
+  // Populated for streaming requests only. This id should matched against
+  // the query response in order to know which query generated this object.
+  int32 future_id = 1010;
+}
+
+message BatchQueryRequest {
+  // Each request can have multiple queries that result in multiple search
+  // results. Each query can search multiple corpora.
+  repeated QueryRequest query = 5;
+}
+
+message BatchQueryResponse {
+  // The response sets for queries within the batch. If using synchronous APIs
+  // for querying, the response set will be included directly in the response.
+  // However, if using the streaming APIs for query, the response set messages
+  // only set the future_id field. Later, as response sets are computed and
+  // returned over the stream, the future_id within the summary can be used for
+  // correlation.
+  repeated ResponseSet response_set = 5;
+
+  repeated Status status = 1000;
+  PerformanceMetrics metrics = 1005;
+}
+
+// This message contains individual partial results that are returned
+// asynchronously by the streaming interface.
+message QueryResponsePart {
+  // The top-level query response. This is sent exactly once over the stream.
+  BatchQueryResponse batch_query_response = 5;
+
+  // A response set. Use the future_id for correlation. One of these is sent
+  // for every query in the batch.
+  ResponseSet response_set = 10;
+
+  // A summary set. Use the future_id for correlation. One of these is sent
+  // for every summary that's requested.
+  Summary summary = 15;
+
+  // A status code at the level of a BatchQueryResponse.
+  repeated Status status = 1000;
+}
+
+// Basic performance metrics that can be attached to a server response.
+message PerformanceMetrics {
+  // How long it took to encode the query.
+  uint32 query_encode_ms = 5;
+  // How long it took to retrieve relevant results.
+  uint32 retrieval_ms = 10;
+  // How long it took to retrieve user data.
+  uint32 userdata_retrieval_ms = 15;
+  // How long it took to rerank the results.
+  uint32 rerank_ms = 20;
+}
+
+//Configuration for the maximum marginal relevance (MMR) reranker.
+message MMRConfig {
+  // Intuitively, this bias controls how much the reranker should favor
+  // diversity over relevance. A bias of 1 means that relevance is not
+  // considered at all, while a bias of 0 means that diversity is not
+  // considered. A score of 0.8 means that diversity counts for 80% of the
+  // score, and relevance for 20%.
+  //
+  // The bias is defined as (1 - lambda), where lambda is defined as in
+  // the original paper, "The Use of MMR, Diversity-Based Reranking for
+  // Reordering Documents and Producing Summaries" by Carbonell and Goldstein,
+  // 1998.
+  float diversity_bias = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "The diversity bias. Higher values indicate more diversity."
+      example: "0.3"
+    }];
+}

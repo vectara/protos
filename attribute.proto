@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "com.vectara";
+option java_outer_classname = "AttributeProtos";
+
+option go_package = "vectara.com/public/proto/common";
+
+package com.vectara;
+
+// A key/value pair representing a document attribute (metadata item).
+message Attribute {
+  // Name of the document metadata attribute.
+  string name = 5;
+  // Value of the document metadata attribute.
+  string value = 10;
+}

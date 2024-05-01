@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+import "status.proto";
+
+option go_package = "vectara.com/public/proto/admin";
+
+option java_package = "com.vectara.admin";
+option java_outer_classname = "AdminMetricProtos";
+
+package com.vectara.admin;
+
+/******************************************************************************
+  Metrics (get request rate etc.)
+ ******************************************************************************/
+
+// This window is used to specify a time range for metrics
+message AbsoluteWindow {
+  int64 start_epoch_secs = 1;
+  int64 end_epoch_secs = 2;
+}
+
+// The request type for usage metrics
+message UsageMetricsRequest {
+  // The type of metric to get
+  enum MetricType {
+    METRICTYPE__NONE = 0;
+    METRICTYPE__INDEXING = 1;
+    METRICTYPE__SERVING = 2;
+  }
+
+  // The corpus for which the metric is requested.
+  uint32 corpus_id = 1;
+  // The time period for which the metric is requested.
+  AbsoluteWindow window = 2;
+  // The type of metric to get.
+  MetricType type = 3;
+  // The response stats will be aggregated by this interval. Minimum aggregation interval is 1 minute.
+  // Supported granularity units for aggregation are days, hours and minutes.
+  // For example, If 2.5 days (in seconds) are passed, results will be aggregated by 2 days.
+  // Similarly, if 7.6 hours (in seconds) are passed, results will be aggregated by 7 hours.
+  int64 aggregation_interval_secs = 4;
+}
+
+// Indexing data
+message IndexingMetric {
+  // The number of documents indexed
+  uint64 doc_count = 1;
+  // The number of document parts indexed
+  uint64 doc_part_count = 2;
+  // The number of bytes indexed.
+  // In case of Upload API, this is the actual bytes extracted from the document and not
+  // the size of the document.
+  // In case of Index API, this is the combined size of text in all the sections of the document.
+  uint64 doc_part_bytes = 3;
+  // The start time for this metric
+  int64 start_epoch_secs = 4;
+}
+
+// Serving/querying data
+message ServingMetric {
+  // The number of rows read
+  uint64 rows_read = 1;
+  // The number of queries
+  uint64 query_count = 2;
+  // The start time for this metric
+  int64 start_epoch_secs = 3;
+}
+
+message UsageMetricsResponse {
+  // The response for a single interval
+  message IntervalValue {
+    // Interval containing value for either Indexing or Serving
+    oneof value {
+      IndexingMetric indexing_value = 1;
+      ServingMetric serving_value = 2;
+    }
+  }
+
+  // List of IntervalValue containing values for either Indexing or Serving. These are
+  // aggregated by the interval specified in the request.
+  repeated IntervalValue values = 1;
+  // The status response of the request
+  Status status = 2;
+}

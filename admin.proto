@@ -1,0 +1,286 @@
+syntax = "proto3";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+import "admin_apikey.proto";
+import "admin_metric.proto";
+import "status.proto";
+
+option go_package = "vectara.com/public/proto/admin";
+
+option java_package = "com.vectara.admin";
+option java_outer_classname = "AdminProtos";
+
+package com.vectara.admin;
+
+/******************************************************************************
+  Corpus Management (add, remove corpora, star a corpus)
+ ******************************************************************************/
+
+message Corpus {
+  // The Corpus ID.
+  // This value is ignored during Corpus creation.
+  uint32 id = 1;
+  // The name of the corpus.
+  string name = 2;
+  // A description for the corpus.
+  string description = 3;
+  // The time at which the corpus was provisioned.
+  // This value is ignored during Corpus creation.
+  int64 dt_provision = 4;
+  // Whether the corpus is enabled for use or not.
+  // This value is ignored during Corpus creation.
+  bool enabled = 5;
+
+  
+  bool swap_qenc = 6;
+  // The default query encoder is designed for normal question-answering types
+  // of queries when the text contains the answer.  Swapping the index encoder
+  // is generally rare, but can be used to help directly match questions to
+  // questions.  This can be useful if you have a FAQ dataset and you want to
+  // directly match the user question to the question in the FAQ.
+  bool swap_ienc = 7;
+  // When a corpus is "textless", Vectara does not store the original text.
+  // Instead, Vectara converts the text to vectors and only retains metadata.
+  bool textless = 8;
+  // Encryption is on by default and cannot be turned off.
+  bool encrypted = 9;
+
+  // This is an advanced setting for changing the underlying model type.  The
+  // default value is "1", which is Vectara's high-performing global model.
+  // Underlying models may be swapped for some paying customers by contacting
+  // our support team.
+  uint64 encoder_id = 10;
+  // An optional maximum size of the metadata that each document can contain.
+  uint32 metadata_max_bytes = 11;
+
+
+  repeated Dimension custom_dimensions = 13;
+  repeated FilterAttribute filter_attributes = 14;
+}
+
+// A custom dimension is additional numeric metadata that you want to affect
+// Vectara's scoring.  For example, these could be "number of stars" ratings,
+// or other business metrics like a product's margins that you want to use
+// to boost where a result is in the list.
+message Dimension {
+  // The name of the custom dimension.  The maximum length of the name is
+  // 8 characters.
+  string name = 1;
+  // A description for the custom dimension.
+  string description = 2;
+  
+  // The default weight to give this dimension when running queries. A value of
+  // 0.0, for example, gives it no weight at all.
+  double serving_default = 3;
+  // The default value to give to documents for this custom dimension.
+  double indexing_default = 4;
+}
+
+// Defines metadata fields that can be used in predicate queries.
+message FilterAttribute {
+  // Name of the field, as seen in metadata.
+  string name = 5;
+  // An optional description.
+  string description = 10;
+  // Whether the field is indexed for maximum query speed.
+  bool indexed = 15;
+  // The data type of the attribute.
+  FilterAttributeType type = 20;
+  // Whether the attribute lives at the document or part level.
+  FilterAttributeLevel level = 25;
+}
+
+enum FilterAttributeType {
+  FILTER_ATTRIBUTE_TYPE__UNDEFINED = 0;
+  FILTER_ATTRIBUTE_TYPE__INTEGER = 5;
+  FILTER_ATTRIBUTE_TYPE__INTEGER_LIST = 10;
+  FILTER_ATTRIBUTE_TYPE__REAL = 15;
+  FILTER_ATTRIBUTE_TYPE__REAL_LIST = 20;
+  FILTER_ATTRIBUTE_TYPE__TEXT = 25;
+  FILTER_ATTRIBUTE_TYPE__TEXT_LIST = 30;
+  FILTER_ATTRIBUTE_TYPE__BOOLEAN = 35;
+}
+
+enum FilterAttributeLevel {
+  FILTER_ATTRIBUTE_LEVEL__UNDEFINED = 0;
+  // Document-level attribute
+  FILTER_ATTRIBUTE_LEVEL__DOCUMENT = 5;
+  // Part-level attribute
+  FILTER_ATTRIBUTE_LEVEL__DOCUMENT_PART = 10;
+}
+
+message CreateCorpusRequest {
+  Corpus corpus = 1;
+}
+
+message CreateCorpusResponse {
+  // The Corpus ID that was created.
+  uint32 corpus_id = 1;
+  Status status = 2;
+}
+
+message DeleteCorpusRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "customerId", "corpusId" ] }
+    example: "{ \"corpusId\": 1 }"
+  };
+
+  // The Customer ID that contains the corpus to be deleted.
+  uint32 customer_id = 1;
+  // The Corpus ID to be deleted.
+  uint32 corpus_id = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
+}
+
+message DeleteCorpusResponse {
+  Status status = 1;
+}
+
+message ResetCorpusRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "customerId", "corpusId" ] }
+    example: "{ \"corpusId\": 1 }"
+  };
+
+  // The Customer ID that contains the corpus to be reset.
+  uint32 customer_id = 1;
+  // The Corpus ID to be reset.
+  uint32 corpus_id = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
+}
+
+message ResetCorpusResponse {
+  Status status = 1;
+}
+
+message ListCorporaRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: { required: [ "numResults" ] }
+    example: "{ \"numResults\": 10, \"filter\": \"[Tt][Ee][Ss][Tt]\" }"
+  };
+
+  // A regex over the names and descriptions to match corpora against.
+  string filter = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"[Tt][Ee][Ss][Tt]\""
+    }];
+
+  // The maximum results to return.
+  uint32 num_results = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      minimum: 1
+    }];
+
+  // A key that is passed in to retrieve a specific page of results.
+  bytes page_key = 5;
+}
+
+message ListCorporaResponse {
+  repeated Corpus corpus = 1;
+
+  // A key that is passed into a subsequent result in order to
+  // retrieve the next page of results.
+  bytes page_key = 2;
+  Status status = 1000;
+}
+
+message UpdateCorpusEnablementRequest {
+  // The corpus to enable or disable.
+  uint32 corpus_id = 1;
+  // If true, enable the corpus. Otherwise, disable it.
+  bool enable = 2;
+}
+
+message UpdateCorpusEnablementResponse {
+  Status status = 1;
+}
+
+message CorpusSize {
+  // The time at which the size was calculated.
+  int64 epoch_secs = 1;
+
+  // The size of the corpus.
+  uint64 size = 2;
+}
+
+message ReadCorpusRequest {
+  // Corpora IDs to read.
+  repeated uint32 corpus_id = 1;
+
+  // Subset of information to read.
+  // Set to true to read basic information about the corpus such as id, name,
+  // description, enabled, etc.
+  bool read_basic_info = 1000;
+  // Set to true to read the size of the corpus.
+  bool read_size = 1001;
+  // Set to true to read the API keys associated with the corpus.
+  bool read_api_keys = 1003;
+  // Set to true to read the custom dimensions of the corpus.
+  bool read_custom_dimensions = 1004;
+  // Set to true to read the filter attributes of the corpus.
+  bool read_filter_attributes = 1005;
+}
+
+message ReadCorpusResponse {
+  // A Corpus information object containing the requested information.
+  message CorpusInfo {
+    // Only requested fields are populated.
+    Corpus corpus = 1;
+    // Status of the corpus.
+    Status corpus_status = 1001;
+    // Size of the corpus. Only populated if read_size is true.
+    CorpusSize size = 2;
+    // Status of the size.
+    Status size_status = 1002;
+    // API keys associated with the corpus. Only populated if read_api_keys is true.
+    repeated ApiKey api_key = 4;
+    // Status of the API keys.
+    Status api_key_status = 1004;
+    // Custom dimensions of the corpus. Only populated if read_custom_dimensions is true.
+    repeated Dimension custom_dimension = 5;
+    // Status of the custom dimensions.
+    Status custom_dimension_status = 1005;
+    // Filter attributes of the corpus. Only populated if read_filter_attributes is true.
+    repeated FilterAttribute filter_attribute = 6;
+    // Status of the filter attributes.
+    Status filter_attribute_status = 1006;
+  }
+
+  // Information about the requested corpora.
+  repeated CorpusInfo corpora = 1;
+}
+
+message ComputeCorpusSizeRequest {
+  // The corpus for which to compute the size.
+  uint32 corpus_id = 1;
+}
+
+message ComputeCorpusSizeResponse {
+  // The size of the corpus.
+  CorpusSize size = 1;
+  // The status of the size computation.
+  Status status = 2;
+}
+
+message ReplaceCorpusFilterAttrsRequest {
+  // The corpus for which to update filters.
+  uint32 corpus_id = 1;
+  // The filters to set. The existing filters are replaced with this list of filters.
+  repeated FilterAttribute filter_attributes = 10;
+}
+
+message ReplaceCorpusFilterAttrsResponse {
+  Status status = 1000;
+
+  // If 'status' represents success, this contains the ID assigned to the job
+  // for updating the list of filters. This ID can be used to query the status
+  // of the job.
+  string job_id = 10;
+}
+
+

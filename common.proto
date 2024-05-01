@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+option java_package = "com.vectara";
+option java_outer_classname = "CommonProtos";
+
+option go_package = "vectara.com/public/proto/common";
+
+package com.vectara;
+
+// Languages supported by Vectara.
+message Language {
+  enum Code {
+    UNKNOWN = 0;
+
+    // English.
+    ENG = 1;
+    // German.
+    DEU = 2;
+    // French.
+    FRA = 3;
+    // Chinese.
+    ZHO = 4;
+    // Korean.
+    KOR = 5;
+    // Arabic.
+    ARA = 6;
+    // Russian.
+    RUS = 7;
+    // Thai.
+    THA = 8;
+    // Dutch.
+    NLD = 9;
+    // Italian.
+    ITA = 10;
+    // Portuguese.
+    POR = 11;
+    // Spanish.
+    SPA = 12;
+    // Japanese.
+    JPN = 13;
+    // Polish.
+    POL = 14;
+    // Turkish.
+    TUR = 15;
+    // Vietnamese.
+    VIE = 16;
+    // Indonesian.
+    IND = 17;
+    // Czech.
+    CES = 18;
+    // Ukrainian.
+    UKR = 19;
+    // Greek.
+    ELL = 20;
+    // Hebrew.
+    HEB = 21;
+    // Farsi/Persian.
+    FAS = 22;
+    // Hindi.
+    HIN = 23;
+    // Urdu.
+    URD = 24;
+    // Swedish.
+    SWE = 25;
+    // Bengali.
+    BEN = 26;
+    // Malay.
+    MSA = 27;
+    // Romanian.
+    RON = 28;
+
+    // Let the platform detect the language.
+    AUTO = 5000;
+  }
+}
+
+  // Request to delete a document from an index.
+message DeleteDocumentRequest {
+  // The Customer ID to issue the request for.
+  int64 customer_id = 1;
+  // The Corpus ID that contains the document.
+  int64 corpus_id = 2;
+  // The Document ID to be deleted.
+  string document_id = 3;
+}
+
+message DeleteDocumentResponse {
+}
+
+// Encapsulates storage quota consumed by indexed documents.
+// NextId: 3
+message StorageQuota {
+  // The number of chars from the document that consumed the storage quota.
+  int64 num_chars = 1;
+  // The number of chars in the metadata of the document that consumed the
+  // storage quota.
+  int64 num_metadata_chars = 2;
+}
