@@ -13,7 +13,10 @@ package com.vectara.serving;
 
 // Defined the weight of a custom dimension at query time.
 message CustomDimension {
+  // The name of the custom dimension.
   string name = 1;
+  // The weight of the custom dimension on the query side. This gets multipled
+  // by the matching index custom dimension weight and added to the score.
   double weight = 2;
 }
 
@@ -27,6 +30,7 @@ message LinearInterpolation {
       }];
   }
 
+// Object to specify how each corpus in a query is searched.
 message CorpusKey {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -55,12 +59,18 @@ message CorpusKey {
   // Weights on custom dimensions for the corpus.
   repeated CustomDimension dim = 20;
 
+  // Filter the documents and document parts based on their metadata.
+  // See https://docs.vectara.com/docs/learn/metadata-search-filtering/filter-overview
+  // for a detailed explanation on how to create a metadata filter.
   string metadata_filter = 25;
 
+  // Object determining how the final search result scores
+  // are influenced by the lexical score.
   LinearInterpolation lexical_interpolation_config = 30;
 }
 
 
+// How a LLM uses the search results to provide a response to a query.
 message SummarizationRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -115,6 +125,8 @@ message SummarizationRequest {
   }
   ModelParams model_params = 215;
 
+  // Parameters for the citation style.
+  CitationParams citation_params = 220;
 
   // If present, the query will be treated as a chat query.
   // When using chat, only one summarization request is allowed per query.
@@ -134,13 +146,16 @@ message QueryRequest {
   uint32 start = 15;
   // The number of results to return.
   uint32 num_results = 20;
+  // Allows processing a matched document part text before being returned
+  // as a search result. Allows a search result to have more of the document
+  // than just the matched document part.
   message ContextConfig {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: { 
-      required: [ "sentences_before", "sentences_after", "start_tag", "end_tag" ] 
-    }
-    example: "{ \"sentences_before\": 3, \"sentences_after\": 3, \"start_tag\": \"<b>\", \"end_tag\": \"</b>\" }"
-  };
+      json_schema: { 
+        required: [ "sentences_before", "sentences_after", "start_tag", "end_tag" ] 
+      }
+      example: "{ \"sentences_before\": 3, \"sentences_after\": 3, \"start_tag\": \"<b>\", \"end_tag\": \"</b>\" }"
+    };
     // chars_before is used for showing the end user the characters leading up
     // to the result snippet.  This can help the end-user understand the
     // context of that result. Ignored if sentences_before is set.
@@ -216,6 +231,40 @@ message QueryRequest {
 
 }
 
+// Citation parameters for the summary.
+message CitationParams {
+  // The citation style to be used in summary.
+  // Can be one of:
+  // NUMERIC (default) -> [1], [2] ...
+  // NONE -> no citations
+  // HTML -> '<a href="https://my.doc/foo">N</a>'
+  // MARKDOWN -> [1](https://my.doc/foo)
+  CitationStyle style = 5;
+  // The url pattern if the citation_style is set to HTML or MARKDOWN.
+  // The pattern can access part and doc fields.
+  // i.e. https://my.doc/foo/{doc.id}/{part.id}
+  optional string url_pattern = 10;
+  // The text pattern if the citation_style is set to HTML or MARKDOWN.
+  // This pattern defaults to N being the index of result if it is not set.
+  // Final result looks like in this case: [N](https://my.doc/foo)
+  // It can also be customized to access the part/doc fields by passing
+  // the field name in curly braces. e.g., {doc.title} or {part.page}
+  // Final result would look like [Title](https://my.doc/foo/2/1)
+  optional string text_pattern = 15;
+}
+
+// The citation style to be used in summary. They are used to reference
+// the source of the information from the documents in the summary.
+enum CitationStyle {
+  // Default style. E.g., [1], [2]
+  NUMERIC = 0;
+  // No citations.
+  NONE = 1;
+  // HTML E.g. <a href="https://my.doc/foo">[N]</a>
+  HTML = 2;
+  // MARKDOWN E.g. [N](https://my.doc/foo)
+  MARKDOWN = 3;
+}
 
 // The chat request.
 message ChatRequest {
@@ -227,6 +276,7 @@ message ChatRequest {
   string conversation_id = 15;
 }
 
+// Values needed to refer to the chat later.
 message Chat {
   // The conversation id of the chat.
   string conversation_id = 5;
@@ -261,43 +311,48 @@ message Summary {
 
   // Populated if chat was requested in the SummaryRequest.
   Chat chat = 205;
-
   // Populated if factual_consistency_score was requested in the SummaryRequest.
   FactualConsistency factual_consistency = 210;
-
   // Determines if the summary is done.
   // `false` if the summary is in-progress for streaming requests, otherwise `true`.
   // this only refers to summary text generation, Factual Consistency will come later if requested.
   bool done = 215;
-
   // Statuses are marked “repeated” for consistency and flexibility. A failed
   // summary should bubble up into the status code of the entire ResponseSet.
   repeated Status status = 1000;
   // Populated for streaming requests only.
   int32 future_id = 1010;
-
 }
 
+// A document part that matched a query.
 message Response {
+  // The text of the document part after being modified by the context config.
   string text = 5;
   // The score used for ranking results.  The higher the score, the better the match.
   float score = 10;
+  // Document part level metadata.
   repeated Attribute metadata = 20;
   // Use this ID to find the document in the ResponseSet.
   uint32 document_index = 25;
+  // The original parameters for the search that resulted in this document part
+  // response.
   CorpusKey corpus_key = 30;
 
 }
 
 message ResponseSet {
+  // Search results for the query.
   repeated Response response = 5;
   // Potentially multiple warnings.
   repeated Status status = 10;
 
   message Document {
+    // The document id.
     string id = 5;
+    // Document level metadata.
     repeated Attribute metadata = 10;
   }
+  // Document level metadata for document parts that are in the response.
   repeated Document document = 15;
 
   // A summary. If using synchronous APIs for querying, the summary will be
@@ -307,11 +362,14 @@ message ResponseSet {
   // within the summary can be used for correlation.
   repeated Summary summary = 25;
 
-  // Populated for streaming requests only.
+  // Populated for streaming requests only. This id should matched against
+  // the query response in order to know which query generated this object.
   int32 future_id = 1010;
 }
 
 message BatchQueryRequest {
+  // Each request can have multiple queries that result in multiple search
+  // results. Each query can search multiple corpora.
   repeated QueryRequest query = 5;
 }
 

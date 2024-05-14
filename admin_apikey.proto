@@ -47,6 +47,8 @@ message ApiKey {
   optional int64 ts_end = 6;
   // Status of the ApiKey.
   ApiKeyStatus status = 7;
+  // An id of the key that is not sensitive.
+  uint32 public_id = 8;
 }
 
 // This request can be used to create one or more ApiKeys.
