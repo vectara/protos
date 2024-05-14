@@ -125,6 +125,8 @@ message SummarizationRequest {
   }
   ModelParams model_params = 215;
 
+  // Parameters for the citation style.
+  CitationParams citation_params = 220;
 
   // If present, the query will be treated as a chat query.
   // When using chat, only one summarization request is allowed per query.
@@ -229,6 +231,40 @@ message QueryRequest {
 
 }
 
+// Citation parameters for the summary.
+message CitationParams {
+  // The citation style to be used in summary.
+  // Can be one of:
+  // NUMERIC (default) -> [1], [2] ...
+  // NONE -> no citations
+  // HTML -> '<a href="https://my.doc/foo">N</a>'
+  // MARKDOWN -> [1](https://my.doc/foo)
+  CitationStyle style = 5;
+  // The url pattern if the citation_style is set to HTML or MARKDOWN.
+  // The pattern can access part and doc fields.
+  // i.e. https://my.doc/foo/{doc.id}/{part.id}
+  optional string url_pattern = 10;
+  // The text pattern if the citation_style is set to HTML or MARKDOWN.
+  // This pattern defaults to N being the index of result if it is not set.
+  // Final result looks like in this case: [N](https://my.doc/foo)
+  // It can also be customized to access the part/doc fields by passing
+  // the field name in curly braces. e.g., {doc.title} or {part.page}
+  // Final result would look like [Title](https://my.doc/foo/2/1)
+  optional string text_pattern = 15;
+}
+
+// The citation style to be used in summary. They are used to reference
+// the source of the information from the documents in the summary.
+enum CitationStyle {
+  // Default style. E.g., [1], [2]
+  NUMERIC = 0;
+  // No citations.
+  NONE = 1;
+  // HTML E.g. <a href="https://my.doc/foo">[N]</a>
+  HTML = 2;
+  // MARKDOWN E.g. [N](https://my.doc/foo)
+  MARKDOWN = 3;
+}
 
 // The chat request.
 message ChatRequest {
