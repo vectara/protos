@@ -20,6 +20,7 @@ message IndexCoreDocumentRequest {
   int64 customer_id = 1;
   // The Corpus ID to index the document into.
   int64 corpus_id = 2;
+  // The document being indexed.
   com.vectara.indexing.CoreDocument document = 3;
 }
 
