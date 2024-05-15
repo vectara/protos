@@ -322,6 +322,7 @@ message Summary {
   repeated Status status = 1000;
   // Populated for streaming requests only.
   int32 future_id = 1010;
+
 }
 
 // A document part that matched a query.
