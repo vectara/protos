@@ -122,6 +122,10 @@ message SummarizationRequest {
     // Higher values penalize new tokens based on whether they appear in the text so far,
     // increasing the model's likelihood to talk about new topics.
     optional float presence_penalty = 20;
+    // This feature is in Beta. If specified, the LLM will make a best effort to sample deterministically,
+    // such that repeated requests with the same seed and parameters should return the same result.
+    // Note:- Seed value is only used when temperature is set to 0.
+    optional uint32 seed = 25;
   }
   ModelParams model_params = 215;
 
@@ -216,8 +220,8 @@ message QueryRequest {
   message RerankingConfig {
     // Which reranking model to use if reranking.  Currently, the only IDs
     // available are:
-    // - 272725717, HuggingFace Open Source x-attentional reranker
     // - 272725718, Maximum Marginal Relevance Reranker
+    // - 272725719, Vectara Multilingual Reranker v1 Reranker
     uint32 reranker_id = 5;
 
     // Reranker-specific parameters.  The numbering starts from 100, and moves
@@ -322,7 +326,6 @@ message Summary {
   repeated Status status = 1000;
   // Populated for streaming requests only.
   int32 future_id = 1010;
-
 }
 
 // A document part that matched a query.
