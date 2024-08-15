@@ -22,6 +22,7 @@ message IndexCoreDocumentRequest {
   int64 corpus_id = 2;
   // The document being indexed.
   com.vectara.indexing.CoreDocument document = 3;
+
 }
 
 message IndexCoreDocumentResponse {

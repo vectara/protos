@@ -163,6 +163,8 @@ message QueryRequest {
     // chars_before is used for showing the end user the characters leading up
     // to the result snippet.  This can help the end-user understand the
     // context of that result. Ignored if sentences_before is set.
+    // Vectara will capture the full sentence that contains the captured characters,
+    // so as to not lose the meaning caused by a truncated word or sentence.
     int32 chars_before = 5 [
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         example: "30"
@@ -171,6 +173,8 @@ message QueryRequest {
     // chars_after is used for showing the end user the characters after the
     // result snippet.  This can help the end-user understand the context of
     // that result. Ignored if sentences_before is set.
+    // Vectara will capture the full sentence that contains the captured characters,
+    // so as to not lose the meaning caused by a truncated word or sentence.
     int32 chars_after = 10 [
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         example: "30"
@@ -227,6 +231,10 @@ message QueryRequest {
     // Reranker-specific parameters.  The numbering starts from 100, and moves
     // upwards in increments of 5.
     optional MMRConfig mmr_config = 100;
+
+    // User function that will be executed on each search result.
+    // May return a double or null. If this is null the item is skipped.
+    optional string user_function = 105;
   }
   RerankingConfig reranking_config = 30;
 
@@ -365,6 +373,7 @@ message ResponseSet {
   // summary results are computed and returned over the stream, the future_id
   // within the summary can be used for correlation.
   repeated Summary summary = 25;
+
 
   // Populated for streaming requests only. This id should matched against
   // the query response in order to know which query generated this object.

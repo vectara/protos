@@ -96,3 +96,4 @@ message StorageQuota {
   // storage quota.
   int64 num_metadata_chars = 2;
 }
+
