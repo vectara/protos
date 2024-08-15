@@ -122,6 +122,10 @@ message SummarizationRequest {
     // Higher values penalize new tokens based on whether they appear in the text so far,
     // increasing the model's likelihood to talk about new topics.
     optional float presence_penalty = 20;
+    // This feature is in Beta. If specified, the LLM will make a best effort to sample deterministically,
+    // such that repeated requests with the same seed and parameters should return the same result.
+    // Note:- Seed value is only used when temperature is set to 0.
+    optional uint32 seed = 25;
   }
   ModelParams model_params = 215;
 
@@ -159,6 +163,8 @@ message QueryRequest {
     // chars_before is used for showing the end user the characters leading up
     // to the result snippet.  This can help the end-user understand the
     // context of that result. Ignored if sentences_before is set.
+    // Vectara will capture the full sentence that contains the captured characters,
+    // so as to not lose the meaning caused by a truncated word or sentence.
     int32 chars_before = 5 [
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         example: "30"
@@ -167,6 +173,8 @@ message QueryRequest {
     // chars_after is used for showing the end user the characters after the
     // result snippet.  This can help the end-user understand the context of
     // that result. Ignored if sentences_before is set.
+    // Vectara will capture the full sentence that contains the captured characters,
+    // so as to not lose the meaning caused by a truncated word or sentence.
     int32 chars_after = 10 [
       (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         example: "30"
@@ -216,13 +224,17 @@ message QueryRequest {
   message RerankingConfig {
     // Which reranking model to use if reranking.  Currently, the only IDs
     // available are:
-    // - 272725717, HuggingFace Open Source x-attentional reranker
     // - 272725718, Maximum Marginal Relevance Reranker
+    // - 272725719, Vectara Multilingual Reranker v1 Reranker
     uint32 reranker_id = 5;
 
     // Reranker-specific parameters.  The numbering starts from 100, and moves
     // upwards in increments of 5.
     optional MMRConfig mmr_config = 100;
+
+    // User function that will be executed on each search result.
+    // May return a double or null. If this is null the item is skipped.
+    optional string user_function = 105;
   }
   RerankingConfig reranking_config = 30;
 
@@ -322,7 +334,6 @@ message Summary {
   repeated Status status = 1000;
   // Populated for streaming requests only.
   int32 future_id = 1010;
-
 }
 
 // A document part that matched a query.

@@ -57,7 +57,9 @@ message Corpus {
 
   repeated Dimension custom_dimensions = 13;
   repeated FilterAttribute filter_attributes = 14;
+
 }
+
 
 // A custom dimension is additional numeric metadata that you want to affect
 // Vectara's scoring.  For example, these could be "number of stars" ratings,
@@ -118,6 +120,20 @@ message CreateCorpusResponse {
   // The Corpus ID that was created.
   uint32 corpus_id = 1;
   Status status = 2;
+}
+
+message UpdateCorpusRequest {
+  // Corpus id to update.
+  uint32 id = 1;
+  // Name to be updated.
+  optional string name = 2;
+  // Description to be updated.
+  optional string description = 3;
+}
+
+message UpdateCorpusResponse {
+  // The Status of the update.
+  Status status = 1;
 }
 
 message DeleteCorpusRequest {
@@ -205,6 +221,8 @@ message CorpusSize {
   int64 epoch_secs = 1;
 
   // The size of the corpus.
+  // This is the sum of the number of characters in the
+  // text and metadata of all documents in the corpus.
   uint64 size = 2;
 }
 
@@ -224,6 +242,7 @@ message ReadCorpusRequest {
   bool read_custom_dimensions = 1004;
   // Set to true to read the filter attributes of the corpus.
   bool read_filter_attributes = 1005;
+
 }
 
 message ReadCorpusResponse {
@@ -249,6 +268,7 @@ message ReadCorpusResponse {
     repeated FilterAttribute filter_attribute = 6;
     // Status of the filter attributes.
     Status filter_attribute_status = 1006;
+
   }
 
   // Information about the requested corpora.
