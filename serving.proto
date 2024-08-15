@@ -374,7 +374,6 @@ message ResponseSet {
   // within the summary can be used for correlation.
   repeated Summary summary = 25;
 
-
   // Populated for streaming requests only. This id should matched against
   // the query response in order to know which query generated this object.
   int32 future_id = 1010;
