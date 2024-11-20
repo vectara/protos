@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "attribute.proto";
+import "common.proto";
 
 option java_package = "com.vectara.lists";
 option java_outer_classname = "ListProtos";
@@ -26,6 +27,7 @@ message ListDocumentsRequest {
   // Otherwise, only documents that match all of the specified metadata
   // will be returned. The syntax is the same as for QueryRequest.metadata.
   string metadata_filter = 20;
+
 }
 
 // Response of listing documents in a corpus.

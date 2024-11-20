@@ -20,6 +20,10 @@ message TextSize {
   uint64 num_chars = 1;
   // Count of metadata characters such as URL, author, date of creation etc.
   uint64 num_metadata_chars = 2;
+  // Number of documents.
+  uint64 num_docs = 3;
+  // Number of document parts.
+  uint64 num_parts = 4;
 }
 
 message ComputeAccountSizeResponse {

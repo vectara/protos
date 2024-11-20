@@ -56,3 +56,4 @@ message Document {
   // of sections.
   repeated Section section = 10;
 }
+

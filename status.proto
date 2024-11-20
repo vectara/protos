@@ -22,7 +22,7 @@ enum StatusCode {               // Reasons for an error
   // INTERNAL_SERVER_ERROR error codes. Try your request again with backoff. 
   // See https://status.vectara.com for the latest info on any outages.
   // If the problem persists, please contact us via support or via our community forums 
-  // at https://discuss.vectara.com if you’re a Growth user.
+  // at https://discuss.vectara.com if you're a Standard user or on the free trial plan.
   FAILURE = 1;
 
   // gRPC Codes ----------------------------------------------------------------
@@ -32,7 +32,7 @@ enum StatusCode {               // Reasons for an error
   // FAILURE, and INTERNAL_SERVER_ERROR error codes. Try your request again 
   // with backoff. See https://status.vectara.com for the latest info on any outages.
   // If the problem persists, please contact us via support or via our community forums 
-  // at https://discuss.vectara.com if you’re a Growth user.
+  // at https://discuss.vectara.com if you're a Standard user or on the free trial plan.
   UNKNOWN             = 2;
   // INVALID_ARGUMENT (3): The request contains an invalid argument. Verify the argument values and try again.
   INVALID_ARGUMENT    = 3;
@@ -45,7 +45,7 @@ enum StatusCode {               // Reasons for an error
   RESOURCE_EXHAUSTED  = 8;
   // FAILED_PRECONDITION (9): The request failed because your system does not meet the correct preconditions. 
   FAILED_PRECONDITION = 9;
-  // ABORTED (10): The indexing request was aborted because of a system error. Try again later.
+  // ABORTED (10): If encountered when indexing, the indexing request was aborted because of a system error. Try again later.
   ABORTED             = 10;
   OUT_OF_RANGE        = 11;
   // UNIMPLEMENTED (12): The request contains an unsupported operation. Verify the values and try again.
@@ -54,12 +54,12 @@ enum StatusCode {               // Reasons for an error
   // INTERNAL_SERVER_ERROR error codes. Try your request again with backoff. 
   // See https://status.vectara.com for the latest info on any outages.
   // If the problem persists, please contact us via support or via our community forums 
-  // at https://discuss.vectara.com if you’re a Growth user.
+  // at https://discuss.vectara.com if you're a Standard user or on the free trial plan.
   INTERNAL            = 13;
   // UNAVAILABLE (14): The service you requested is currently unavailable. Check our status page at status.vectara.com for more information.
   UNAVAILABLE         = 14;
   DATA_LOSS           = 15;
-  // UNAUTHENTICATED (16): The indexing request does not have valid authentication credentials. Verify that you have attached authentication credentials with the request.
+  // UNAUTHENTICATED (16): The request does not have valid authentication credentials. Verify that you have attached authentication credentials with the request.
   UNAUTHENTICATED     = 16;
 
   // HTTP Codes ----------------------------------------------------------------
@@ -253,6 +253,7 @@ enum StatusCode {               // Reasons for an error
   ADM__CUST_ALREADY_ACTIVE = 2534;
   ADM__CUST_REACTIVATE_FAILED = 2535;
   ADM__CUST_ENABLEMENT_FAILED = 2536;
+  ADM__CUST_MARK_EXPIRED_FAILED = 2537;
 
   ADM__CORPUS_LIMIT_REACHED = 2524;
 

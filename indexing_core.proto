@@ -42,4 +42,3 @@ message CoreDocument {
   repeated CustomDimension custom_dims = 5;
 }
 
-

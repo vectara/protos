@@ -91,6 +91,8 @@ message ListApiKeysRequest {
   // [Optional] Get API keys of these types.
   // Default: If not set, API_KEY_TYPE__SERVING and API_KEY_TYPE__SERVING_INDEXING are returned.
   repeated ApiKeyType api_key_type = 3;
+  // [Optional] Filter API keys by corpus ID.
+  optional uint32 corpus_id = 4;
   // If set, returns corpus name & id associated with api keys.
   bool read_corpora_info = 1000;
 }

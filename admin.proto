@@ -50,7 +50,11 @@ message Corpus {
   // default value is "1", which is Vectara's high-performing global model.
   // Underlying models may be swapped for some paying customers by contacting
   // our support team.
-  uint64 encoder_id = 10;
+  uint64 encoder_id = 10 [deprecated = true];
+
+  // New encoder_name field
+  string encoder_name = 16;
+
   // An optional maximum size of the metadata that each document can contain.
   uint32 metadata_max_bytes = 11;
 
@@ -224,6 +228,14 @@ message CorpusSize {
   // This is the sum of the number of characters in the
   // text and metadata of all documents in the corpus.
   uint64 size = 2;
+  // Count of actual characters in the text that will be searched.
+  uint64 num_chars = 3;
+  // Count of metadata characters such as URL, author, date of creation etc.
+  uint64 num_metadata_chars = 4;
+  // Number of documents.
+  uint64 num_docs = 5;
+  // Number of document parts.
+  uint64 num_parts = 6;
 }
 
 message ReadCorpusRequest {
