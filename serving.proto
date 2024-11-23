@@ -408,6 +408,7 @@ message BatchQueryRequest {
   // Each request can have multiple queries that result in multiple search
   // results. Each query can search multiple corpora.
   repeated QueryRequest query = 5;
+
 }
 
 message BatchQueryResponse {
