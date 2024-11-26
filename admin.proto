@@ -32,7 +32,7 @@ message Corpus {
   // This value is ignored during Corpus creation.
   bool enabled = 5;
 
-  
+
   bool swap_qenc = 6;
   // The default query encoder is designed for normal question-answering types
   // of queries when the text contains the answer.  Swapping the index encoder
@@ -75,7 +75,7 @@ message Dimension {
   string name = 1;
   // A description for the custom dimension.
   string description = 2;
-  
+
   // The default weight to give this dimension when running queries. A value of
   // 0.0, for example, gives it no weight at all.
   double serving_default = 3;
@@ -198,6 +198,10 @@ message ListCorporaRequest {
 
   // A key that is passed in to retrieve a specific page of results.
   bytes page_key = 5;
+
+  // Multiple sort options to specify the keys that should be order.
+  // The ordering will be applied in sequence.
+  repeated SortOptions sort_options = 6;
 }
 
 message ListCorporaResponse {
@@ -314,5 +318,24 @@ message ReplaceCorpusFilterAttrsResponse {
   // of the job.
   string job_id = 10;
 }
+
+message SortOptions {
+  // The key to sort on.
+  SortKey sort_key = 1;
+  // The order in which to sort
+  SortOrder sort_order = 2;
+}
+
+enum SortOrder {
+  SORT_ORDER__UNDEFINED = 0;
+  SORT_ORDER_ASCENDING = 1;
+  SORT_ORDER_DESCENDING = 2;
+}
+
+enum SortKey {
+  SORT_KEY__UNDEFINED = 0;
+  SORT_KEY_DATE_CREATED = 1;
+}
+
 
 
